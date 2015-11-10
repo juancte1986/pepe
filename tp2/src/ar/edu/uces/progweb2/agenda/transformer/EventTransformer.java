@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ar.edu.uces.progweb2.agenda.dao.HallDao;
 import ar.edu.uces.progweb2.agenda.dao.UserDao;
 import ar.edu.uces.progweb2.agenda.dto.EventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
@@ -16,6 +17,7 @@ import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
 import ar.edu.uces.progweb2.agenda.model.Event;
 import ar.edu.uces.progweb2.agenda.model.Guest;
+import ar.edu.uces.progweb2.agenda.model.HallMeeting;
 import ar.edu.uces.progweb2.agenda.model.Meeting;
 import ar.edu.uces.progweb2.agenda.model.PrivateEvent;
 import ar.edu.uces.progweb2.agenda.model.User;
@@ -25,7 +27,13 @@ import ar.edu.uces.progweb2.agenda.utils.CalendarUtils;
 public class EventTransformer {
 	
 	private UserDao userDao;
+	private HallDao hallDao;
 	
+	@Autowired
+	public void setHallDao(HallDao hallDao) {
+		this.hallDao = hallDao;
+	}
+
 	@Autowired
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
@@ -39,16 +47,13 @@ public class EventTransformer {
 			event = new PrivateEvent();
 		}
 		event.setDate(new Date());
-		event.setIndex(index);
 		return event;
 	}
 
 	public EventDTO tranformToEventDTO(Event event) {
 		EventDTO eventDTO = new EventDTO();
 		eventDTO.setEndTime(event.getEndTime().toString());
-		eventDTO.setIndex(event.getIndex().toString());
 		eventDTO.setName(event.getName());
-		eventDTO.setTipo(event.getTipo());
 		return eventDTO;
 	}
 
@@ -64,12 +69,12 @@ public class EventTransformer {
 		event.setGuests(this.getGuests(formMeetingDTO.getGuestsIds()));
 		String start= formMeetingDTO.getDate()+ " " + formMeetingDTO.getStartTime(); 
 		String end=  formMeetingDTO.getDate()+ " " + formMeetingDTO.getEndTime();
-		Date startTime = CalendarUtils.getDate(start);
-		Date endTime = CalendarUtils.getDate(end);
+		Date startTime = CalendarUtils.getDateTime(start);
+		Date endTime = CalendarUtils.getDateTime(end);
 		event.setStartTime(startTime);
 		event.setEndTime(endTime);
-		event.setHall(formMeetingDTO.getHall());
-		return null;
+		event.setHallMeeting(new HallMeeting(this.hallDao.getById(formMeetingDTO.getHallId())));
+		return event;
 	}
 	
 	private Set<Guest> getGuests(String guestsIds){
@@ -84,11 +89,11 @@ public class EventTransformer {
 		return guests;
 	}
 
-	public Event tranformToPrivateEvent(FormPrivateEventDTO formPrivateEventDTO) {
+	public PrivateEvent tranformToPrivateEvent(FormPrivateEventDTO formPrivateEventDTO) {
 		PrivateEvent event = new PrivateEvent();
 		if(formPrivateEventDTO.getId() != null ){
 			event.setId(formPrivateEventDTO.getId());
-		}
+		}	
 		event.setDate(CalendarUtils.getDate(formPrivateEventDTO.getDate()));
 		event.setName(formPrivateEventDTO.getName());
 		event.setOwner(formPrivateEventDTO.getOwner());
@@ -96,11 +101,12 @@ public class EventTransformer {
 		event.setAddress(formPrivateEventDTO.getAddress());
 		String start= formPrivateEventDTO.getDate()+ " " + formPrivateEventDTO.getStartTime(); 
 		String end=  formPrivateEventDTO.getDate()+ " " + formPrivateEventDTO.getEndTime();
-		Date startTime = CalendarUtils.getDate(start);
-		Date endTime = CalendarUtils.getDate(end);
+		Date startTime = CalendarUtils.getDateTime(start);
+		Date endTime = CalendarUtils.getDateTime(end);
 		event.setStartTime(startTime);
 		event.setEndTime(endTime);
-		return null;
+		
+		return event;
 	}
 
 	public FormPrivateEventDTO tranformToFormPrivateEventDTO(Event event) {
@@ -128,7 +134,7 @@ public class EventTransformer {
 		form.setStartTime(CalendarUtils.getTime(meeting.getStartTime()));
 		form.setEndTime(CalendarUtils.getTime(meeting.getEndTime()));
 		form.setDate(CalendarUtils.convertDateToString(meeting.getDate()));
-		form.setHall(meeting.getHall());
+		form.setHallId(meeting.getHallMeeting().getHall().getId());
 		form.setTheme(meeting.getTheme());
 		form.setGuestsIds(this.getGuestsIds(meeting.getGuests()));
 		form.setGuestsNames(this.getGuestsNames(meeting.getGuests()));

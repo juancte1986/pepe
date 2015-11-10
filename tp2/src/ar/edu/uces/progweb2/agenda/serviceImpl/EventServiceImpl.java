@@ -2,12 +2,15 @@ package ar.edu.uces.progweb2.agenda.serviceImpl;
 
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import ar.edu.uces.progweb2.agenda.bo.EventBO;
 import ar.edu.uces.progweb2.agenda.dto.EventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.model.User;
 import ar.edu.uces.progweb2.agenda.service.EventService;
 
 @Service("eventService")
@@ -51,7 +54,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventDTO> getEvents(Date date) {
-		return this.eventBO.getEvents(date);
+	public List<EventDTO> getEvents(Date date, User user) {
+		return this.eventBO.getEvents(date, user);
 	}
 }

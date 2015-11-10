@@ -17,7 +17,14 @@
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.css" type="text/css" />
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-1.11.3.js"></script>
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-ui.js"></script>
-		
+		<script src="${pageContext.request.contextPath}/js/widgets/jquery.calendar.js"></script>
+		<script>
+			$(function() {
+				$("#content").applyCalendar({
+					urlContext : '${pageContext.request.contextPath}'
+				});
+			});
+		</script>
 	</head>
 	<body>
 		<a href="">Salir</a>
@@ -37,18 +44,19 @@
 				</thead>
 				<tbody>
 					 <tr>
-						<td id="columnSunday"><div class="column"></div></td>
-						<td id="columnMonday"><div class="column"></div></td>
-						<td id="columnTuesday"><div class="column"></div></td>
-						<td id="columnWednesday"<div class="column"></div>></td>
-						<td id="columnThursday"><div class="column"></div></td>
-						<td id="columnFriday"><div class="column"></div></td>
-						<td id="columnSaturday"><div class="column"></div></td>
+						<td><div class="column" id="columnSunday"></div></td>
+						<td><div class="column" id="columnMonday"></div></td>
+						<td><div class="column" id="columnTuesday"></div></td>
+						<td><div class="column" id="columnWednesday"></div></td>
+						<td><div class="column" id="columnThursday"></div></td>
+						<td><div class="column" id="columnFriday"></div></td>
+						<td><div class="column" id="columnSaturday"></div></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<br/>
+		<button id="next">Siguiente</button>
+		<button id="previous">Anterior</button>
 		<a href='<c:url value="/newMeeting.htm" />'>Crear reunion</a>
 		<a href='<c:url value="/newPrivateEvent.htm" />'>Crear evento privado</a>
 	</body> 

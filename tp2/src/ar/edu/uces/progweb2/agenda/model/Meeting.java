@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class Meeting extends Event{
 	
-	private Hall hall ;
+	private HallMeeting hallMeeting ;
 	private String theme;
 	private Set<Guest> guests;
 	
@@ -12,14 +12,16 @@ public class Meeting extends Event{
 		
 	}
 	
-	public Hall getHall() {
-		return hall;
+	public HallMeeting getHallMeeting() {
+		return hallMeeting;
 	}
-	
-	public void setHall(Hall hall) {
-		this.hall = hall;
+
+
+	public void setHallMeeting(HallMeeting hallMeeting) {
+		this.hallMeeting = hallMeeting;
 	}
-	
+
+
 	public String getTheme() {
 		return theme;
 	}

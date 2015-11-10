@@ -24,6 +24,7 @@ public class PrivateEventValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "errors.event.date.empty");
 		
 		if (!errors.hasFieldErrors()) {
+			
 			FormEventDTO event = (FormEventDTO) obj;
 			if(!CalendarUtils.isValidDate(event.getDate())){
 				errors.rejectValue("date", "errors.event.date.format");
@@ -32,8 +33,8 @@ public class PrivateEventValidator implements Validator {
 			if(!errors.hasFieldErrors("date")){
 				String start= event.getDate()+ " " + event.getStartTime(); 
 				String end=  event.getDate()+ " " + event.getEndTime();
-				Date startTime = CalendarUtils.getDate(start);
-				Date endTime = CalendarUtils.getDate(end);
+				Date startTime = CalendarUtils.getDateTime(start);
+				Date endTime = CalendarUtils.getDateTime(end);
 				if(!endTime.after(startTime)){
 					errors.rejectValue("date", "errors.event.date.after");
 				}

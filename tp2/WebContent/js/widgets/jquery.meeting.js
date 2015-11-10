@@ -1,4 +1,4 @@
-$.widget('custom.applyEvent', {
+$.widget('custom.applyMeeting', {
 	options : {
 		urlContext : "",
 		guestIds:"",
@@ -16,10 +16,11 @@ $.widget('custom.applyEvent', {
 		this.urlContext = this.options.urlContext;
 		this.guestIds = this.options.guestIds;
 		this.guestsNames = this.options.guestsNames;
-		this.date = this.element.find("#date");
+		this.date = this.element.find("#datepicker");
 		this.inputGuest = this.element.find("#inputGuest");
 		this.hiddenGuestsIds  = this.element.find("#hiddenGuestsIds");
 		this.ulGuests = this.element.find("#ulGuests");
+		this.hiddenGuestId = this.element.find("#hiddenGuestId");
 	},
 
 	_initialize : function() {
@@ -31,21 +32,32 @@ $.widget('custom.applyEvent', {
 
 	_bindEvents : function() {
 		this.element.find("#btn-addUser").click($.proxy(this._addUser, this));
+		this.ulGuests.on('click', '.itemDelete', function() {
+		    $(this).closest('li').remove();
+		});
 	},
 	
 	_addUser: function() {
-		var url = "#?id=" + this.element.find("#user-id").val();
-		$('<li class="li-user" value='+this.element.find("#hiddenGuestId").val()+ '>' + this.inputGuest.val() +' <a href="'+url+'">Eliminar</a></li>').appendTo(this.ulGuests);
+		$('<li class="ui-state-default li-user" value="'+ this.hiddenGuestId.val() +'">' + this.inputGuest.val() + '<a class="itemDelete" href="#">Eliminar</a></li>').appendTo(this.ulGuests);
+		this._loadhiddenGuestsIds();
+	},
+	
+	_deleteUser: function () {
+		this._loadhiddenGuestsIds();
+	},
+	
+	_loadhiddenGuestsIds: function() {
+		debugger;
 		var string ="";
 		var array = this.element.find(".li-user");
-		for(var i = 0; i < array; i++){
-			if(i == (array.lemgth -1)){
+		for(var i = 0; i < array.length; i++){
+			if(i == (array.length -1)){
 				string+= array[i].value.toString();
 			} else {
 				string+= array[i].value.toString() + ",";
 			}
 		}
-		
+		this.hiddenGuestsIds.val(string);
 	},
 	
 	_createDatePicker : function() {
@@ -53,13 +65,13 @@ $.widget('custom.applyEvent', {
 	},
 	
 	_createAtocompletar : function() {
-		this.inputUsers.autocomplete({
+		var url = this.urlContext + "/services/getUsers";
+		this.inputGuest.autocomplete({
 		 	minLength: 3,
 			source : function(request, response) {
-		    	var url = "${pageContext.request.contextPath}/services/getUsers";
 				$.ajax({
 					url : url,
-					type: "POST",
+					type: "GET",
 					data: { term: request.term },
 					dataType : "json",
 					success : function(data) {
@@ -73,14 +85,17 @@ $.widget('custom.applyEvent', {
 					}
 				});
 			},
-			select: function (event, ui) {
-		        this.element.find("#user-Id").val(ui.item.key);
-		    }
+			select: $.proxy(this._loadHiddenGuestId ,this)
 		});
 	},
 	
+	_loadHiddenGuestId : function(event, ui) {
+		debugger;
+		this.hiddenGuestId.val(ui.item.key);
+	},
+	
 	_loadGuestIds : function() {
-		this.hiddenGuestsIds.val(this.guestIds);
+		this.hiddenGuestsIds.val(this.guestsIds);
 	},
 	
 	_loadGuestNames : function() {

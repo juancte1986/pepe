@@ -22,7 +22,7 @@ $.widget('custom.applyPrivateEvent', {
 	},
 
 	_createDatepicker : function() {
-		this.date.datepicker();
+		$( "#datepicker" ).datepicker();
 	},
 	
 	destroy : function() {

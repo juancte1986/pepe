@@ -21,7 +21,7 @@ public class MeetingValidator implements Validator{
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors,"guests", "errors.event.guests.empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors,"guestsIds", "errors.event.guests.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "errors.event.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "errors.event.date.empty");
 		
@@ -34,8 +34,8 @@ public class MeetingValidator implements Validator{
 			if(!errors.hasFieldErrors("date")){
 				String start= event.getDate()+ " " + event.getStartTime(); 
 				String end=  event.getDate()+ " " + event.getEndTime();
-				Date startTime = CalendarUtils.getDate(start);
-				Date endTime = CalendarUtils.getDate(end);
+				Date startTime = CalendarUtils.getDateTime(start);
+				Date endTime = CalendarUtils.getDateTime(end);
 				if(!endTime.after(startTime)){
 					errors.rejectValue("date", "errors.event.date.after");
 				}

@@ -13,11 +13,10 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<!-- css -->
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.css" type="text/css" />
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"type="text/css" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.css"type="text/css" />
 		<!-- js -->
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-1.11.3.js"></script>
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-ui.js"></script>
-		<script src="${pageContext.request.contextPath}/js/lib/jquery.datetimepicker.full.js"></script>
 		<script src="${pageContext.request.contextPath}/js/widgets/jquery.privateEvent.js"></script>
 		<script>
 			$(function() {
@@ -41,7 +40,7 @@
 				<form:label path="date">
 					<fmt:message key="label.date" />
 				</form:label>
-				<form:input path="date"/>
+				<form:input id="datepicker" path="date"/>
 				<form:errors path="date" cssStyle="color: red" />
 				<br/>
 				<!--hora de inicio-->

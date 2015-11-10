@@ -10,8 +10,6 @@ public abstract class Event {
 	private Date date;
 	private Date startTime;
 	private Date endTime;
-	private Integer index;
-	private String tipo;
 	
 	public Event(){
 		
@@ -64,23 +62,6 @@ public abstract class Event {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
-	public Integer getIndex() {
-		return index;
-	}
-
-	public void setIndex(Integer index) {
-		this.index = index;
-	}
-	
 	
 	
 }

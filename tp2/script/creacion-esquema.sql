@@ -15,9 +15,9 @@ create table usuario (
 	primary key (id)
 );
 
-insert into usuario (usuario, contrasenia, nombre, apellido, locale) values('user1','1234','juan','pppp','es_ar');
-insert into usuario (usuario, contrasenia, nombre, apellido, locale) values('user2','1234','martin','pppp','es_ar');
-insert into usuario (usuario, contrasenia, nombre, apellido, locale) values('user3','1234','esteban','pppp','en_us');
+	insert into usuario (usuario, contrasenia, nombre, apellido, locale) values('user1','1234','juan','pppp','es_ar');
+	insert into usuario (usuario, contrasenia, nombre, apellido, locale) values('user2','1234','martin','pppp','es_ar');
+	insert into usuario (usuario, contrasenia, nombre, apellido, locale) values('user3','1234','esteban','pppp','en_us');
 
 create table sala (
 	id integer not null AUTO_INCREMENT,
@@ -31,11 +31,11 @@ insert into sala (descripcion) values ('Principal');
 
 create table evento (
 	id integer not null AUTO_INCREMENT,
+	descripcion varchar (50) not null, /*despues cambiar por nombre*/
 	fecha DATETIME not null,
 	usuarioId integer not null,
 	horaInicio DATETIME not null,
 	horaFin  DATETIME not null,
-	index int not null,
 	primary key(id),
 	FOREIGN KEY (usuarioId) REFERENCES usuario(id)
 );
@@ -50,8 +50,18 @@ create table evento_privado  (
 create table reunion (
 	id integer not null,
 	tema varchar(500) not null,
+	salaReunionId integer not null,
+	primary key(id),
+	FOREIGN KEY (salaId) REFERENCES sala_reunion(id)
+	
+);
+
+create table sala_reunion (
+	id integer not null,
+	reunionId integer not null,
 	salaId integer not null,
 	primary key(id),
+	FOREIGN KEY (reunionId) REFERENCES reunion(id),
 	FOREIGN KEY (salaId) REFERENCES sala(id)
 	
 );

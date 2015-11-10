@@ -47,7 +47,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class, "u");
 		for(int i = 0; i < args.length; i++){
-			Criterion result= Restrictions.eq("u.id", args[i]);
+			Criterion result= Restrictions.eq("u.id", new Long(args[i]));
 			criteria.add(result);
 		}
 		return (List<User>) criteria.list();

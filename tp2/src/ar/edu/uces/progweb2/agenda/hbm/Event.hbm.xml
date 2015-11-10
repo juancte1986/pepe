@@ -7,11 +7,10 @@
 		<id column="id" name="id">
 			<generator class="native" />
 		</id>
-		<property name="name" column="nombre" />
+		<property name="name" column="descripcion" />
 		<property name="date" column="fecha" />
 		<property name="startTime" column="horaInicio" />
 		<property name="endTime" column="horaFin" />
-		<property name="index" column="index" />
 		<many-to-one class="ar.edu.uces.progweb2.agenda.model.User" 
 			name="owner"
 			column="usuarioId"
@@ -24,9 +23,8 @@
 	       	<many-to-one class="ar.edu.uces.progweb2.agenda.model.Hall" 
 				name="hall"
 				column="salaId"
-				cascade ="none"
 				not-null="true"/>
-			<set name="guests" cascade="all-delete-orphan" lazy="true">
+			<set name="guests" cascade="all" lazy="false">
 				<key column="reunionId"/>
 				<one-to-many class="ar.edu.uces.progweb2.agenda.model.Guest"/>
 			</set>

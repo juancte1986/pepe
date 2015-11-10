@@ -7,12 +7,11 @@ import ar.edu.uces.progweb2.agenda.dto.EventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.model.User;
 
 public interface EventBO {
 
-	public void save(FormEventDTO formEventDTO);
-
-	public List<EventDTO> getEvents(Date date);
+	public List<EventDTO> getEvents(Date date, User user);
 
 	public void saveMeeting(FormMeetingDTO formMeetingDTO);
 

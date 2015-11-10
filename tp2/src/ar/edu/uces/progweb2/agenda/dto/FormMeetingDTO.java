@@ -7,7 +7,7 @@ import ar.edu.uces.progweb2.agenda.model.Hall;
 public class FormMeetingDTO extends FormEventDTO {
 
 	private String theme;
-	private Hall hall;
+	private Long hallId;
 	private String guestsIds;
 	private List<String> guestsNames;
 
@@ -35,12 +35,12 @@ public class FormMeetingDTO extends FormEventDTO {
 		this.theme = theme;
 	}
 
-	public Hall getHall() {
-		return hall;
+	public Long getHallId() {
+		return hallId;
 	}
 
-	public void setHall(Hall hall) {
-		this.hall = hall;
+	public void setHallId(Long hallId) {
+		this.hallId = hallId;
 	}
 
 }

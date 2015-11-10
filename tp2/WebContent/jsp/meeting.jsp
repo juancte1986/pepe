@@ -14,18 +14,16 @@
 		<!-- css -->
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.css" type="text/css" />
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.css" type="text/css" />
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.datetimepicker.css"type="text/css" />
 		<!-- js -->
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-1.11.3.js"></script>
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-ui.js"></script>
-		<script src="${pageContext.request.contextPath}/js/lib/jquery.datetimepicker.full.js"></script>
 		<script src="${pageContext.request.contextPath}/js/widgets/jquery.meeting.js"></script>
 		<script>
 			$(function() {
 				$("#content").applyMeeting({
 					urlContext : '${pageContext.request.contextPath}',
 					guestIds: '${formMeeting.guestsIds}',
-					guestsNames: ${formMeeting.guestsNames}
+// 					guestsNames: ${formMeeting.guestsNames}
 				});
 			});
 		</script>
@@ -51,7 +49,7 @@
 				<form:label path="date">
 					<fmt:message key="label.date" />
 				</form:label>
-				<form:input id="date" path="date"/>
+				<form:input id="datepicker" path="date"/>
 				<form:errors path="date" cssStyle="color: red" />
 				<br/>
 				<!--hora de inicio-->
@@ -73,26 +71,26 @@
 				<!--invitados-->
 				<br/>
 				<!--salas-->
-				<form:label path="hall">
+				<form:label path="hallId">
 					<fmt:message key="label.hall" />
 				</form:label>
-				<form:select path="hall">
+				<form:select path="hallId">
 					<form:options items="${halls}" itemLabel="description" itemValue="id"/>
 				</form:select>
 				<br/>
 				
 				<!--invitados-->
-				<form:label path="guests">
-					<fmt:message key="label.guests" />
+				<form:label path="guestsIds">
+					<fmt:message key="label.guestsNames" />
 				</form:label>
                 <!-- se ingrea el user para el autocompletar -->
 				<input id="inputGuest"/>
 				 <!-- va almacenar los ids de los user -->
-				<form:hidden id="hiddenGuestsIds" path="guests" />
+				<form:hidden id="hiddenGuestsIds" path="guestsIds" />
 				<!-- va a guardar el id actual -->
 				<input type="hidden" id="hiddenGuestId" />
 				<!-- va a cargar el user actual -->
-				<button id="btn-addUser">Agregar usuario</button>
+				<a id="btn-addUser" href="#">Agregar usuario</a>
 				<!-- va listar los usuarios seleccionados del autocompletar -->
 				<ul id="ulGuests">
 				</ul>

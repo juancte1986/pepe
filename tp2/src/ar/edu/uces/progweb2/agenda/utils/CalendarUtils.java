@@ -2,13 +2,15 @@ package ar.edu.uces.progweb2.agenda.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 public class CalendarUtils {
 	
-	private static final String FORMAT = "dd/MMM/yyyy HH:mm";
+	private static final String FORMAT = "MM/dd/yyyy";
+	
 	public static Date[] getWeek(Date date) {
 		Date[] week = new Date[7];
 		Calendar calendar = Calendar.getInstance();
@@ -140,6 +142,17 @@ public class CalendarUtils {
 		}
 		return dateFormat;
 	}
+	public static Date getDateTime(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT + " HH:mm");
+		Date dateFormat = null;
+		try {
+			dateFormat = sdf.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dateFormat;
+	}
 	
 	public static boolean isValidDate(String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
@@ -171,6 +184,59 @@ public class CalendarUtils {
 	public static String convertDateToString(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
 		return sdf.format(date);
+	}
+	
+	public static List<String> getHours(){
+		List<String> hours= new ArrayList<String>();
+		hours.add("00:00");
+		hours.add("00:30");
+		hours.add("01:00");
+		hours.add("01:30");
+		hours.add("02:00");
+		hours.add("02:30");
+		hours.add("03:00");
+		hours.add("03:30");
+		hours.add("04:00");
+		hours.add("04:30");
+		hours.add("05:00");
+		hours.add("05:30");
+		hours.add("06:00");
+		hours.add("06:30");
+		hours.add("07:00");
+		hours.add("07:30");
+		hours.add("08:00");
+		hours.add("08:30");
+		hours.add("09:00");
+		hours.add("09:30");
+		hours.add("10:00");
+		hours.add("10:30");
+		hours.add("11:00");
+		hours.add("11:30");
+		hours.add("12:00");
+		hours.add("12:30");
+		hours.add("13:00");
+		hours.add("13:30");
+		hours.add("14:00");
+		hours.add("14:30");
+		hours.add("15:00");
+		hours.add("15:30");
+		hours.add("16:00");
+		hours.add("16:30");
+		hours.add("17:00");
+		hours.add("17:30");
+		hours.add("18:00");
+		hours.add("18:30");
+		hours.add("19:00");
+		hours.add("19:30");
+		hours.add("20:00");
+		hours.add("20:30");
+		hours.add("21:00");
+		hours.add("21:30");
+		hours.add("22:00");
+		hours.add("22:30");
+		hours.add("23:00");
+		hours.add("23:30");
+		return hours;
 	}
 }
 
