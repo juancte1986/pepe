@@ -4,13 +4,22 @@ import ar.edu.uces.progweb2.agenda.model.User;
 
 public abstract class FormEventDTO {
 	
-	private long id;
+	private Long id;
 	private String name;
+	private String date;
 	private String startTime;
 	private String endTime;
 	private User owner;
 	private String tipo;
-	
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
 	public String getTipo() {
 		return tipo;
 	}
@@ -23,11 +32,11 @@ public abstract class FormEventDTO {
 		
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

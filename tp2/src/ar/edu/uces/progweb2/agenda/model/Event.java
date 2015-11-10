@@ -4,7 +4,7 @@ import java.util.Date;
 
 public abstract class Event {
 	
-	private long id;
+	private Long id;
 	private User owner;
 	private String name;
 	private Date date;
@@ -17,11 +17,11 @@ public abstract class Event {
 		
 	}
 	
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

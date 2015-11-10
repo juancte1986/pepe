@@ -2,17 +2,16 @@ package ar.edu.uces.progweb2.agenda.validator;
 
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
-import ar.edu.uces.progweb2.agenda.model.User;
 import ar.edu.uces.progweb2.agenda.utils.CalendarUtils;
 
-@Component
-public class MeetingValidator implements Validator{
+@Controller
+public class PrivateEventValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -21,7 +20,6 @@ public class MeetingValidator implements Validator{
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors,"guests", "errors.event.guests.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "errors.event.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "errors.event.date.empty");
 		
@@ -43,5 +41,4 @@ public class MeetingValidator implements Validator{
 				
 		}
 	}
-
 }

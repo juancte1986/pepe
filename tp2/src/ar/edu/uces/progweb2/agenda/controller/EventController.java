@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import ar.edu.uces.progweb2.agenda.dto.EventDTO;
-import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
 import ar.edu.uces.progweb2.agenda.model.Hall;
@@ -26,7 +25,7 @@ import ar.edu.uces.progweb2.agenda.model.User;
 import ar.edu.uces.progweb2.agenda.service.EventService;
 import ar.edu.uces.progweb2.agenda.service.HallService;
 import ar.edu.uces.progweb2.agenda.utils.CalendarUtils;
-import ar.edu.uces.progweb2.agenda.validator.EventValidator;
+import ar.edu.uces.progweb2.agenda.validator.PrivateEventValidator;
 import ar.edu.uces.progweb2.agenda.validator.MeetingValidator;
 
 @SessionAttributes("user")
@@ -35,11 +34,11 @@ public class EventController {
 
 	private HallService hallService;
 	private EventService eventService;
-	private EventValidator eventValidator;
+	private PrivateEventValidator eventValidator;
 	private MeetingValidator meetingValidator;
 
 	@Autowired
-	public void setEventValidator(EventValidator eventValidator) {
+	public void setEventValidator(PrivateEventValidator eventValidator) {
 		this.eventValidator = eventValidator;
 	}
 
@@ -87,73 +86,156 @@ public class EventController {
 
 	// sincronicos
 
-	@RequestMapping(value = "/newEvent")
-	public String initNewEvent(@RequestParam("event") String event,
-			ModelMap model) {
-		if (event.equals("meeting")) {
-			List<Hall> halls = this.hallService.getHalls();
-			model.addAttribute("formMeeting", new FormMeetingDTO());
-			model.addAttribute("halls", halls);
-			return "/jsp/meeting.jsp";
-		} else if (event.equals("privateEvent")) {
-			model.addAttribute("formPrivateEvent", new FormPrivateEventDTO());
-			return "/jsp/privateEvent.jsp";
-		} else {
-			model.addAttribute("error", true);
-			return "/jsp/calendar.jsp";
-		}
+	@RequestMapping(value = "/newMeeting")
+	public String newMeeting(ModelMap model) {
+		List<Hall> halls = this.hallService.getHalls();
+		model.addAttribute("formMeeting", new FormMeetingDTO());
+		model.addAttribute("halls", halls);
+		model.addAttribute("hours", this.getHours());
+		return "/jsp/meeting.jsp";
+	}
+	
+	@RequestMapping(value = "/newPrivateEvent")
+	public String newPrivateEvent(ModelMap model) {
+		model.addAttribute("hours", this.getHours());
+		model.addAttribute("formPrivateEvent", new FormPrivateEventDTO());
+		return "/jsp/privateEvent.jsp";
 	}
 
 	@RequestMapping(value = "/saveMeeting")
-	public String saveMeeting(
-			@ModelAttribute("formMeeting") FormEventDTO eventDTO,
+	public String saveMeeting(@ModelAttribute("formMeeting") FormMeetingDTO eventDTO,
 			ModelMap model, BindingResult result) {
-		this.eventValidator.validate(eventDTO, result);
 		this.meetingValidator.validate(eventDTO, result);
 		if (result.hasErrors()) {
 			List<Hall> halls = this.hallService.getHalls();
-			model.addAttribute("halls", halls);
-			return "/jsp/meeting.jsp";
-		}
-		if (result.hasErrors()) {
-			List<Hall> halls = this.hallService.getHalls();
+			model.addAttribute("hours", this.getHours());
 			model.addAttribute("halls", halls);
 			return "/jsp/meeting.jsp";
 		}
 		User user = (User) model.get("user");
 		eventDTO.setOwner(user);
-		eventDTO.setTipo("meeting");
-		this.eventService.saveEvent(eventDTO);
+		this.eventService.saveMeeting(eventDTO);
 		return "/jsp/calendar.jsp";
 	}
 
 	@RequestMapping(value = "/savePrivateEvent")
 	public String savePrivateEvent(
-			@ModelAttribute("formPrivateEvent") FormEventDTO eventDTO,
+			@ModelAttribute("formPrivateEvent") FormPrivateEventDTO eventDTO,
 			ModelMap model, BindingResult result) {
 		this.eventValidator.validate(eventDTO, result);
 		if (result.hasErrors()) {
 			List<Hall> halls = this.hallService.getHalls();
 			model.addAttribute("halls", halls);
+			model.addAttribute("hours", this.getHours());
 			return "/jsp/meeting.jsp";
 		}
 		User user = (User) model.get("user");
 		eventDTO.setOwner(user);
-		eventDTO.setTipo("privateEvent");
-		this.eventService.saveEvent(eventDTO);
+		this.eventService.savePrivateEvent(eventDTO);
 		return "/jsp/calendar.jsp";
 	}
-
-	public String detailEvent() {
-		return null;
+	
+	@RequestMapping(value = "/detailMeeting")
+	public String detailMeeting(@RequestParam("id") Long id, ModelMap model) {
+		FormMeetingDTO form = this.eventService.getFormMeetingDTO(id);
+		List<Hall> halls = this.hallService.getHalls();
+		model.addAttribute("formMeeting", form);
+		model.addAttribute("halls", halls);
+		model.addAttribute("hours", this.getHours());
+		return "/jsp/meeting.jsp";
 	}
-
-	public String updateMeeting() {
+	
+	@RequestMapping(value = "/detailPrivateEvent")
+	public String detailPrivateEvent(@RequestParam("id") Long id, ModelMap model) {
+		FormPrivateEventDTO form = this.eventService.getFormPrivateEventDTO(id);
+		model.addAttribute("formPrivateEvent", form);
+		model.addAttribute("hours", this.getHours());
+		return "/jsp/privateEvent.jsp";
+	}
+	
+	@RequestMapping(value = "/updateMeeting")
+	public String updateMeeting(@ModelAttribute("formMeeting") FormMeetingDTO eventDTO,
+			ModelMap model, BindingResult result) {
+		this.meetingValidator.validate(eventDTO, result);
+		if (result.hasErrors()) {
+			List<Hall> halls = this.hallService.getHalls();
+			model.addAttribute("halls", halls);
+			model.addAttribute("hours", this.getHours());
+			return "/jsp/meeting.jsp";
+		}
+		User user = (User) model.get("user");
+		eventDTO.setOwner(user);
+		this.eventService.updateMeeting(eventDTO);
 		return "/jsp/calendar.jsp";
 	}
-
-	public String updatePrivateEvent() {
+	
+	@RequestMapping(value = "/updatePrivateEvent")
+	public String updatePrivateEvent(@ModelAttribute("formPrivateEvent") FormPrivateEventDTO eventDTO,
+			ModelMap model, BindingResult result) {
+		this.eventValidator.validate(eventDTO, result);
+		if (result.hasErrors()) {
+			List<Hall> halls = this.hallService.getHalls();
+			model.addAttribute("halls", halls);
+			model.addAttribute("hours", this.getHours());
+			return "/jsp/meeting.jsp";
+		}
+		User user = (User) model.get("user");
+		eventDTO.setOwner(user);
+		this.eventService.updatePrivateEvent(eventDTO);
 		return "/jsp/calendar.jsp";
+	}
+	
+	private Map<String, Object> getHours(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("1","00:00");
+		map.put("2","00:30");
+		map.put("3","01:00");
+		map.put("4","01:30");
+		map.put("5","02:00");
+		map.put("6","02:30");
+		map.put("7","03:00");
+		map.put("8","03:30");
+		map.put("9","04:00");
+		map.put("10","04:30");
+		map.put("11","05:00");
+		map.put("12","05:30");
+		map.put("13","06:00");
+		map.put("14","06:30");
+		map.put("15","07:00");
+		map.put("16","07:30");
+		map.put("17","08:00");
+		map.put("18","08:30");
+		map.put("19","09:00");
+		map.put("20","09:30");
+		map.put("21","10:00");
+		map.put("22","10:30");
+		map.put("23","11:00");
+		map.put("24","11:30");
+		map.put("25","12:00");
+		map.put("26","12:30");
+		map.put("27","13:00");
+		map.put("28","13:30");
+		map.put("29","14:00");
+		map.put("30","14:30");
+		map.put("31","15:00");
+		map.put("32","15:30");
+		map.put("33","16:00");
+		map.put("34","16:30");
+		map.put("35","17:00");
+		map.put("36","17:30");
+		map.put("37","18:00");
+		map.put("38","18:30");
+		map.put("39","19:00");
+		map.put("40","19:30");
+		map.put("41","20:00");
+		map.put("42","20:30");
+		map.put("43","21:00");
+		map.put("44","21:30");
+		map.put("45","22:00");
+		map.put("46","22:30");
+		map.put("47","23:00");
+		map.put("48","23:30");
+		return map;
 	}
 
 }

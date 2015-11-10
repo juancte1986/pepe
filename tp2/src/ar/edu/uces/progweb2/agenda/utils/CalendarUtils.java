@@ -4,9 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class CalendarUtils {
-
+	
+	private static final String FORMAT = "dd/MMM/yyyy HH:mm";
 	public static Date[] getWeek(Date date) {
 		Date[] week = new Date[7];
 		Calendar calendar = Calendar.getInstance();
@@ -128,7 +130,7 @@ public class CalendarUtils {
 	}
 	
 	public static Date getDate(String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
 		Date dateFormat = null;
 		try {
 			dateFormat = sdf.parse(date);
@@ -137,6 +139,38 @@ public class CalendarUtils {
 			e.printStackTrace();
 		}
 		return dateFormat;
+	}
+	
+	public static boolean isValidDate(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		try {
+			sdf.setLenient(false);
+			sdf.parse(date);
+		} catch (ParseException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean isAfterDate(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		try {
+			sdf.setLenient(false);
+			sdf.parse(date);
+		} catch (ParseException e) {
+			return false;
+		}
+		return true;
+	}
+
+	public static String getTime(Date time) {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		return sdf.format(time);
+	}
+
+	public static String convertDateToString(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		return sdf.format(date);
 	}
 }
 

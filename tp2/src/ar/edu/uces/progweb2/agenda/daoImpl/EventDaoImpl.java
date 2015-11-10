@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import ar.edu.uces.progweb2.agenda.dao.EventDao;
 import ar.edu.uces.progweb2.agenda.dto.EventDTO;
 import ar.edu.uces.progweb2.agenda.model.Event;
+import ar.edu.uces.progweb2.agenda.model.Meeting;
 
 @Repository("eventDao")
 public class EventDaoImpl extends GenericDaoImpl<Event> implements EventDao {

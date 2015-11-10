@@ -13,47 +13,43 @@
 		<title>Calendar</title>
 		<!-- css -->
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.css" type="text/css" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/calendar.css" type="text/css" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.css" type="text/css" />
+		<script src="${pageContext.request.contextPath}/js/lib/jquery-1.11.3.js"></script>
+		<script src="${pageContext.request.contextPath}/js/lib/jquery-ui.js"></script>
+		
 	</head>
 	<body>
 		<a href="">Salir</a>
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>Hours</th>
-					<th>Sunday</th>
-					<th>Monday</th>
-					<th>Tuesday</th>
-					<th>Wednesday</th>
-					<th>Thursday</th>
-					<th>Friday</th>
-					<th>Saturday</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach begin="0" end="23" varStatus="i">
-					 <tr>
-						<td rowspan="2">${i.index == '0'? '12' : i.index}${i.index < '12'? 'am' : 'pm'}</td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-					</tr>
+		<div id="content">
+			<table class="table table-bordered">
+				<thead>
 					<tr>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
-						<td><div><ul class="list-group"></ul></div></td>
+						<th>Hours</th>
+						<th id="sundayId">Sunday</th>
+						<th id="mondayId">Monday</th>
+						<th id="tuesdayId">Tuesday</th>
+						<th id="wednesdayId">Wednesday</th>
+						<th id="thursdayId">Thursday</th>
+						<th id="fridayId">Friday</th>
+						<th id="saturdayId">Saturday</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-		<a href='<c:url value="/newEvent.htm?event=meeting" />'>Crear reunion</a>
-		<a href='<c:url value="/newEvent.htm?event=privateEvent" />'>Crear evento privado</a>
+				</thead>
+				<tbody>
+					 <tr>
+						<td id="columnSunday"><div class="column"></div></td>
+						<td id="columnMonday"><div class="column"></div></td>
+						<td id="columnTuesday"><div class="column"></div></td>
+						<td id="columnWednesday"<div class="column"></div>></td>
+						<td id="columnThursday"><div class="column"></div></td>
+						<td id="columnFriday"><div class="column"></div></td>
+						<td id="columnSaturday"><div class="column"></div></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br/>
+		<a href='<c:url value="/newMeeting.htm" />'>Crear reunion</a>
+		<a href='<c:url value="/newPrivateEvent.htm" />'>Crear evento privado</a>
 	</body> 
 </html>

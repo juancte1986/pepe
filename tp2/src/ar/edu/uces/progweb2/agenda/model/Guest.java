@@ -2,18 +2,18 @@ package ar.edu.uces.progweb2.agenda.model;
 
 public class Guest {
 	
-	private long id;
+	private Long id;
 	private User user;
 	
 	public Guest(){
 		
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

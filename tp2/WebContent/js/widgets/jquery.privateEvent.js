@@ -1,6 +1,6 @@
-$.widget('custom.applyCalendar', {
+$.widget('custom.applyPrivateEvent', {
 	options : {
-		urlContext : "",
+		urlContext : ""
 	},
 
 	_create : function() {
@@ -10,14 +10,21 @@ $.widget('custom.applyCalendar', {
 	},
 
 	_bindVars : function() {
+		this.urlContext = this.options.urlContext;
+		this.date = this.element.find("#date");
 	},
 
 	_initialize : function() {
+		this._createDatepicker();
 	},
 
 	_bindEvents : function() {
 	},
 
+	_createDatepicker : function() {
+		this.date.datepicker();
+	},
+	
 	destroy : function() {
 		for ( var name in this.calls) {
 			this.calls[name].abort();
@@ -28,5 +35,4 @@ $.widget('custom.applyCalendar', {
 			CollectGarbage();
 		}
 	}
-
 });

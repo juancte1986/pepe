@@ -1,6 +1,7 @@
 package ar.edu.uces.progweb2.agenda.daoImpl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import ar.edu.uces.progweb2.agenda.dao.UserDao;
 import ar.edu.uces.progweb2.agenda.dto.FormLoginDTO;
+import ar.edu.uces.progweb2.agenda.model.Guest;
 import ar.edu.uces.progweb2.agenda.model.User;
 
 @Repository("userDao")
@@ -36,6 +38,18 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
 		Criterion resultSurname = Restrictions.like("u.surname", filter + "%");
 		criteria.add(Restrictions.or(resultName, resultUser, resultSurname));
 	    criteria.setMaxResults(MAX_RESULT);
+		return (List<User>) criteria.list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getUsers(String[] args) {
+		Session session = sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class, "u");
+		for(int i = 0; i < args.length; i++){
+			Criterion result= Restrictions.eq("u.id", args[i]);
+			criteria.add(result);
+		}
 		return (List<User>) criteria.list();
 	}
 

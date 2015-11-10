@@ -18,13 +18,11 @@
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-1.11.3.js"></script>
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-ui.js"></script>
 		<script src="${pageContext.request.contextPath}/js/lib/jquery.datetimepicker.full.js"></script>
-		<script src="${pageContext.request.contextPath}/js/widgets/jquery.event.js"></script>
+		<script src="${pageContext.request.contextPath}/js/widgets/jquery.privateEvent.js"></script>
 		<script>
 			$(function() {
-				$("#content").applyEvent({
-					urlContext : '${pageContext.request.contextPath}',
-					isPrivateEvent : true
-					
+				$("#content").applyPrivateEvent({
+					urlContext : '${pageContext.request.contextPath}'
 				});
 			});
 		</script>
@@ -39,19 +37,28 @@
 				<form:input path="name"/>
 				<form:errors path="name" cssStyle="color: red" />
 				<br/>
-				<!--Hora de inicio -->
+				<!--fecha del evento -->
+				<form:label path="date">
+					<fmt:message key="label.date" />
+				</form:label>
+				<form:input path="date"/>
+				<form:errors path="date" cssStyle="color: red" />
+				<br/>
+				<!--hora de inicio-->
 				<form:label path="startTime">
 					<fmt:message key="label.startTime" />
 				</form:label>
-				<form:input id="startTimepicker" path="startTime"/>
-				<form:errors path="startTime" cssStyle="color: red" />
+				<form:select id="startTimepicker" path="startTime">
+					<form:options items="${hours}"/>
+				</form:select>
 				<br/>
-				<!--Hora de finalizacion-->
+				<!--hora de finalizacion-->
 				<form:label path="endTime">
 					<fmt:message key="label.endTime" />
 				</form:label>
-				<form:input id="endTimepicker" path="endTime"/>
-				<form:errors path="endTime" cssStyle="color: red" />
+				<form:select id="endTimepicker" path="endTime">
+					<form:options items="${hours}"/>
+				</form:select>
 				<br/>
 				<!--Descripcion -->
 				<form:label path="description">
