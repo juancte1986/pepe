@@ -30,49 +30,39 @@ insert into sala (descripcion) values ('Los cardales');
 insert into sala (descripcion) values ('Principal');
 
 create table evento (
-	id integer not null AUTO_INCREMENT,
-	descripcion varchar (50) not null, /*despues cambiar por nombre*/
+	eventoId integer not null AUTO_INCREMENT,
+	nombre varchar (50) not null, 
 	fecha DATETIME not null,
 	usuarioId integer not null,
 	horaInicio DATETIME not null,
 	horaFin  DATETIME not null,
-	primary key(id),
+	primary key(eventoId),
 	FOREIGN KEY (usuarioId) REFERENCES usuario(id)
 );
 
 create table evento_privado  (
-	id integer not null,
+	eventoId integer not null,
 	direccion varchar(500) not null,
 	descripcion varchar(500) not null,
-	primary key(id)
+	primary key(eventoId)
 );
 
 create table reunion (
-	id integer not null,
+	eventoId integer not null,
 	tema varchar(500) not null,
-	salaReunionId integer not null,
-	primary key(id),
-	FOREIGN KEY (salaId) REFERENCES sala_reunion(id)
-	
-);
-
-create table sala_reunion (
-	id integer not null,
-	reunionId integer not null,
 	salaId integer not null,
-	primary key(id),
-	FOREIGN KEY (reunionId) REFERENCES reunion(id),
+	primary key(eventoId),
 	FOREIGN KEY (salaId) REFERENCES sala(id)
 	
 );
 
 create table invitado (
 	id integer not null AUTO_INCREMENT,
-	reunionId integer not null,
+	eventoId integer not null,
 	usuarioId integer not null,
 	primary key(id),
 	FOREIGN KEY (usuarioId) REFERENCES usuario(id),
-	FOREIGN KEY (reunionId) REFERENCES reunion(id)
+	FOREIGN KEY (eventoId) REFERENCES reunion(eventoId)
 );
 
 GRANT ALL PRIVILEGES ON `appschema`.* TO 'jveron'@'localhost'

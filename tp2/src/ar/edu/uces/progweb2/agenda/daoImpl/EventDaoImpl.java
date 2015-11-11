@@ -25,7 +25,7 @@ public class EventDaoImpl extends GenericDaoImpl<Event> implements EventDao {
 		Criterion resultOwner = Restrictions.eq("e.owner.id", user.getId());
 		criteria.createAlias("e.guests", "guest"); 
 		Criterion resultGuest = Restrictions.eq("guest.id", user.getId());
-		return (List<Event>) criteria.add(Restrictions.or(resultDate, resultOwner, resultGuest)).uniqueResult();
+		return (List<Event>) criteria.add(Restrictions.or(resultDate, resultOwner, resultGuest)).list();
 	}
 
 }

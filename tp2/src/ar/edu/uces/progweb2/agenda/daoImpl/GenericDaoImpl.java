@@ -50,7 +50,8 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T>{
 	@Override
 	public void save(T object) {
 		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(object);
+		//session.merge(object);
+		session.save(object);
 	}
 	
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)

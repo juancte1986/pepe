@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -58,11 +59,11 @@ public class EventController {
 	}
 
 	// asincronicos
-	@RequestMapping(value = "getEvents")
-	public @ResponseBody
-	Map<String, Object> getEvents(@RequestBody Date date, ModelMap model) {
+	@RequestMapping(value = "/getEvents", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> getEvents(@RequestBody String dateString, ModelMap model) {
 		User user = (User) model.get("user");
 		Map<String, Object> map = new HashMap<String, Object>();
+		Date date = CalendarUtils.getDate(dateString);
 		Date week[] = CalendarUtils.getWeek(date);
 		List<EventDTO> eventsSunday = this.eventService.getEvents(week[0], user);
 		List<EventDTO> eventsMonday = this.eventService.getEvents(week[1], user);
@@ -81,7 +82,7 @@ public class EventController {
 		map.put("eventsMonday", eventsSaturday);
 		map.put("week", week);
 
-		return null;
+		return map;
 	}
 
 	@RequestMapping(value = "eventSwitchTime/{id}/")

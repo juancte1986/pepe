@@ -73,7 +73,7 @@ public class EventTransformer {
 		Date endTime = CalendarUtils.getDateTime(end);
 		event.setStartTime(startTime);
 		event.setEndTime(endTime);
-		event.setHallMeeting(new HallMeeting(this.hallDao.getById(formMeetingDTO.getHallId())));
+		event.setHall(this.hallDao.getById(formMeetingDTO.getHallId()));
 		return event;
 	}
 	
@@ -134,7 +134,7 @@ public class EventTransformer {
 		form.setStartTime(CalendarUtils.getTime(meeting.getStartTime()));
 		form.setEndTime(CalendarUtils.getTime(meeting.getEndTime()));
 		form.setDate(CalendarUtils.convertDateToString(meeting.getDate()));
-		form.setHallId(meeting.getHallMeeting().getHall().getId());
+		form.setHallId(meeting.getHall().getId());
 		form.setTheme(meeting.getTheme());
 		form.setGuestsIds(this.getGuestsIds(meeting.getGuests()));
 		form.setGuestsNames(this.getGuestsNames(meeting.getGuests()));

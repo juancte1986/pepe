@@ -3,7 +3,7 @@
 "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="ar.edu.uces.progweb2.agenda.model.Guest" table="sala">
+	<class name="ar.edu.uces.progweb2.agenda.model.Guest" table="invitado">
 		<id column="id" name="id">
 			<generator class="native" />
 		</id>
@@ -12,6 +12,13 @@
 			cascade="none"
 			not-null="true" 
 			class="ar.edu.uces.progweb2.agenda.model.User">
+		</many-to-one>
+		<many-to-one name="meeting"
+			column="eventoId"
+			insert="false"
+			update="false"
+			not-null="true" 
+			class="ar.edu.uces.progweb2.agenda.model.Meeting">
 		</many-to-one>
 	</class>
 </hibernate-mapping>

@@ -24,13 +24,16 @@ $.widget('custom.applyCalendar', {
 	},
 	
 	_loadEventsCallback: function() {
+		debugger;
 		var url = this.urlContext + "/services/getEvents";
-		var date = new Date();
+		var d = new Date();
+		date = d.getMonth()+'/' + d.getDate() + '/' + d.getFullYear()
 		$.ajax({
 			url : url,
 			type: "POST",
-			data: JSON.stringify(date),
+			data: date,
 			dataType : "json",
+			contentType : "application/json;charset=UTF-8",
 			success : $.proxy(this._loadEvents, this),
 			error : function() {
 				alert("Error al obtener los eventos");
