@@ -37,7 +37,7 @@ public class MeetingValidator implements Validator{
 				Date startTime = CalendarUtils.getDateTime(start);
 				Date endTime = CalendarUtils.getDateTime(end);
 				if(!endTime.after(startTime)){
-					errors.rejectValue("date", "errors.event.date.after");
+					errors.rejectValue("endTime", "errors.event.date.after");
 				}
 			}
 				

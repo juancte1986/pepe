@@ -2,7 +2,10 @@ $.widget('custom.applyMeeting', {
 	options : {
 		urlContext : "",
 		guestIds:"",
-		guestsNames: {}
+		guestsNames:{},
+		isOwner: false,
+		isGuest: false,
+		isConfirm: false
 
 	},
 
@@ -16,6 +19,9 @@ $.widget('custom.applyMeeting', {
 		this.urlContext = this.options.urlContext;
 		this.guestIds = this.options.guestIds;
 		this.guestsNames = this.options.guestsNames;
+		this.isOwner = this.options.isOwner;
+		this.isGuest = this.options.isGuest;
+		this.isConfirm = this.options.isConfirm;
 		this.date = this.element.find("#datepicker");
 		this.inputGuest = this.element.find("#inputGuest");
 		this.hiddenGuestsIds  = this.element.find("#hiddenGuestsIds");
@@ -24,10 +30,27 @@ $.widget('custom.applyMeeting', {
 	},
 
 	_initialize : function() {
-		this._createDatePicker();
+		this._createDatePicker({
+			dateFormat: 'dd-mm-yy'
+		});
 		this._createAtocompletar();
 		this._loadGuestIds();
 		this._loadGuestNames();
+		this._hideInputs();
+		
+	},
+	
+	_hideInputs: function() {
+		if(this.isOwner){
+			this.element.find(".guest").hide();
+		} else {
+			this.element.find(".owner").attr("disabled", "disabled");
+			if(this.isConfirm){
+				this.element.find(".guest").attr("disabled", "disabled");
+			} else {
+				this.element.find("#btn-edit").attr("disabled", "disabled");
+			}
+		}
 	},
 
 	_bindEvents : function() {
@@ -47,7 +70,6 @@ $.widget('custom.applyMeeting', {
 	},
 	
 	_loadhiddenGuestsIds: function() {
-		debugger;
 		var string ="";
 		var array = this.element.find(".li-user");
 		for(var i = 0; i < array.length; i++){
@@ -61,7 +83,9 @@ $.widget('custom.applyMeeting', {
 	},
 	
 	_createDatePicker : function() {
-		this.date.datepicker();
+		this.date.datepicker({
+			dateFormat: 'dd/mm/yy'
+		});
 	},
 	
 	_createAtocompletar : function() {
@@ -90,7 +114,6 @@ $.widget('custom.applyMeeting', {
 	},
 	
 	_loadHiddenGuestId : function(event, ui) {
-		debugger;
 		this.hiddenGuestId.val(ui.item.key);
 	},
 	
@@ -99,9 +122,10 @@ $.widget('custom.applyMeeting', {
 	},
 	
 	_loadGuestNames : function() {
+		debugger;
 		for(var i=0; i<this.guestsNames.length; i++){
 			var guest = this.guestsNames[i].split(",");   
-			$('<li class="li-user" value='+guest[1]+ '>' + guest[0] +' <a href="'+url+'">Eliminar</a></li>').appendTo(this.ulGuests);
+			$('<li class="ui-state-default li-user" value='+guest[1]+ '>' + guest[0] +' <a href="#">Eliminar</a></li>').appendTo(this.ulGuests);
 		}
 	},
 	

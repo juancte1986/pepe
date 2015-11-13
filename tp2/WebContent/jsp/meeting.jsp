@@ -23,7 +23,6 @@
 				$("#content").applyMeeting({
 					urlContext : '${pageContext.request.contextPath}',
 					guestIds: '${formMeeting.guestsIds}',
-// 					guestsNames: ${formMeeting.guestsNames}
 				});
 			});
 		</script>
@@ -66,7 +65,7 @@
 				</form:label>
 				<form:select id="endTimepicker" path="endTime">
 					<form:options items="${hours}"/>
-				</form:select>
+				</form:select><form:errors path="endTime" cssStyle="color: red" />
 				<br/>
 				<!--invitados-->
 				<br/>
@@ -81,12 +80,13 @@
 				
 				<!--invitados-->
 				<form:label path="guestsIds">
-					<fmt:message key="label.guestsNames" />
+					<fmt:message key="label.guests" />
 				</form:label>
                 <!-- se ingrea el user para el autocompletar -->
 				<input id="inputGuest"/>
 				 <!-- va almacenar los ids de los user -->
 				<form:hidden id="hiddenGuestsIds" path="guestsIds" />
+				<form:errors path="guestsIds" cssStyle="color: red" />
 				<!-- va a guardar el id actual -->
 				<input type="hidden" id="hiddenGuestId" />
 				<!-- va a cargar el user actual -->
@@ -94,8 +94,8 @@
 				<!-- va listar los usuarios seleccionados del autocompletar -->
 				<ul id="ulGuests">
 				</ul>
-				
 				<form:button><fmt:message key="label.save"/></form:button>
+				<a href='<c:url value="/returnCalendar.htm" />'><fmt:message key="label.cancel"/></a>
 			</form:form>
 		</div>
 	</body>

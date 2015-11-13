@@ -9,8 +9,7 @@ public abstract class FormEventDTO {
 	private String date;
 	private String startTime;
 	private String endTime;
-	private User owner;
-	private String tipo;
+	private User userLogin;
 
 	public String getDate() {
 		return date;
@@ -18,14 +17,6 @@ public abstract class FormEventDTO {
 
 	public void setDate(String date) {
 		this.date = date;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
 	}
 
 	public FormEventDTO(){
@@ -64,12 +55,12 @@ public abstract class FormEventDTO {
 		this.endTime = endTime;
 	}
 
-	public User getOwner() {
-		return owner;
+	public User getUserLogin() {
+		return userLogin;
 	}
 
-	public void setOwner(User owner) {
-		this.owner = owner;
+	public void setUserLogin(User userLogin) {
+		this.userLogin = userLogin;
 	}
 	
 }

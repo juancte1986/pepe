@@ -11,5 +11,5 @@ public interface UserDao extends GenericDao<User>{
 	
 	public User getUser(FormLoginDTO form);
 	public List<User> getUsers(String filter);
-	public List<User> getUsers(String[] args);
+	public List<User> getUsers(List<Long> args);
 }

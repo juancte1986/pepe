@@ -22,7 +22,9 @@ $.widget('custom.applyPrivateEvent', {
 	},
 
 	_createDatepicker : function() {
-		$( "#datepicker" ).datepicker();
+		$( "#datepicker" ).datepicker({
+			dateFormat: 'dd/mm/yy'
+		});
 	},
 	
 	destroy : function() {

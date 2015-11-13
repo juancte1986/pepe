@@ -13,7 +13,7 @@
 .column {
 	overflow: hidden;
 	width: 200px;
-	max-height: 960px;
-	background: green;
+	height: 960px;
+	background: GhostWhite;
 	position: relative; 
 }

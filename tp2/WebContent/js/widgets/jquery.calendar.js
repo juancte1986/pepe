@@ -12,26 +12,47 @@ $.widget('custom.applyCalendar', {
 	_bindVars : function() {
 		this.urlContext = this.options.urlContext;
 		this.table = this.element.find(".table");
-//		this.week = new Array();
+		this.week = new Array();
 	},
 
 	_initialize : function() {
-		this._loadEventsCallback();
+		this._loadEventsCallback(this._getCurrentDate());
 	},
 
 	_bindEvents : function() {
-		
+		this.element.find("#btn-next").click($.proxy(this._loadNextCalendar,this));
+		this.element.find("#btn-previous").click($.proxy(this._loadPreviuosCalendar,this));
 	},
 	
-	_loadEventsCallback: function() {
+	_getCurrentDate : function (){
+		var date = new Date();
+		var formCalendar = {};
 		debugger;
+		formCalendar.date= date.getDate().toString() +'/' +  (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString() ;
+		formCalendar.actualPage = 0;
+		return formCalendar;
+	},
+	
+	_loadNextCalendar: function() {
+		var formCalendar = {};
+		formCalendar.date = this.week[6];
+		formCalendar.actualPage = 1;
+		this._loadEventsCallback(formCalendar);
+	},
+	
+	_loadPreviuosCalendar : function() {
+		var formCalendar = {};
+		formCalendar.date = this.week[0];
+		formCalendar.actualPage = -1;
+		this._loadEventsCallback(formCalendar);
+	},
+	
+	_loadEventsCallback: function(formCalendar) {
 		var url = this.urlContext + "/services/getEvents";
-		var d = new Date();
-		date = d.getMonth()+'/' + d.getDate() + '/' + d.getFullYear()
 		$.ajax({
 			url : url,
 			type: "POST",
-			data: date,
+			data: JSON.stringify(formCalendar),
 			dataType : "json",
 			contentType : "application/json;charset=UTF-8",
 			success : $.proxy(this._loadEvents, this),
@@ -51,21 +72,21 @@ $.widget('custom.applyCalendar', {
 	},
 	
 	_loadThead: function(week) {
-//		 this.week = week;
-//		 $('<div>' + week[0] + '</div>')appendTo(this.table.find("sundayId"));
-//		 $('<div>' + week[1] + '</div>')appendTo(this.table.find("mondayId"));
-//		 $('<div>' + week[2] + '</div>')appendTo(this.table.find("tuesdayId"));
-//		 $('<div>' + week[3] + '</div>')appendTo(this.table.find("wednesdayId"));
-//		 $('<div>' + week[4] + '</div>')appendTo(this.table.find("thursdayId"));
-//		 $('<div>' + week[5] + '</div>')appendTo(this.table.find("fridayId"));
-//		 $('<div>' + week[6] + '</div>')appendTo(this.table.find("saturdayId"));
+		 this.week = week;
+		 this.table.find("#sundayId").html('<div>'+this.week[0]+'</div>');
+		 this.table.find("#mondayId").html('<div>'+this.week[1]+'</div>');
+		 this.table.find("#tuesdayId").html('<div>'+this.week[2]+'</div>');
+		 this.table.find("#wednesdayId").html('<div>'+this.week[3]+'</div>');
+		 this.table.find("#thursdayId").html('<div>'+this.week[4]+'</div>');
+		 this.table.find("#fridayId").html('<div>'+this.week[5]+'</div>');
+		 this.table.find("#saturdayId").html('<div>'+this.week[5]+'</div>');
 	},
 	
-	__loadBody: function(data) {
-		var events = data.events; 
-		for(var i = 0 ; i < events.length; i++){
-			debugger;
-		}
+	_loadBody: function(data) {
+//		var events = data.events; 
+//		for(var i = 0 ; i < events.length; i++){
+//			debugger;
+//		}
 	},
 	
 	destroy : function() {

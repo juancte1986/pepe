@@ -5,11 +5,20 @@ public class Guest {
 	private Long id;
 	private User user; 
 	private Meeting meeting;
+	private boolean confirm = false;
 	
 	public Guest(){
 		
 	}
 	
+	public boolean getConfirm() {
+		return confirm;
+	}
+
+	public void setConfirm(boolean confirm) {
+		this.confirm = confirm;
+	}
+
 	public Meeting getMeeting() {
 		return meeting;
 	}
@@ -17,8 +26,6 @@ public class Guest {
 	public void setMeeting(Meeting meeting) {
 		this.meeting = meeting;
 	}
-
-
 
 	public Long getId() {
 		return id;

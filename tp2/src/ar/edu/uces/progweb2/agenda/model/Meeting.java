@@ -11,7 +11,7 @@ public class Meeting extends Event{
 	public Meeting(){
 		
 	}
-
+	
 	public Hall getHall() {
 		return hall;
 	}

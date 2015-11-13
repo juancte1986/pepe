@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ar.edu.uces.progweb2.agenda.bo.EventBO;
-import ar.edu.uces.progweb2.agenda.dto.EventDTO;
+import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
+import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
 import ar.edu.uces.progweb2.agenda.model.User;
@@ -39,8 +40,8 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override
-	public FormMeetingDTO getFormMeetingDTO(Long id) {
-		return this.eventBO.getFormMeetingDTO(id);
+	public FormMeetingDTO getFormMeetingDTO(Long id, User user) {
+		return this.eventBO.getFormMeetingDTO(id, user);
 	}
 
 	@Override
@@ -54,7 +55,17 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventDTO> getEvents(Date date, User user) {
+	public List<DargEventDTO> getEvents(Date date, User user) {
 		return this.eventBO.getEvents(date, user);
+	}
+
+	@Override
+	public void update(FormDragEventDTO drag) {
+		this.eventBO.update(drag);
+	}
+
+	@Override
+	public void delete(Long id) {
+		this.eventBO.delete(id);
 	}
 }

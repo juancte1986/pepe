@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CalendarUtils {
 	
-	private static final String FORMAT = "MM/dd/yyyy";
+	private static final String FORMAT = "dd/MM/yyyy";
 	
 	public static Date[] getWeek(Date date) {
 		Date[] week = new Date[7];
@@ -237,6 +237,15 @@ public class CalendarUtils {
 		hours.add("23:00");
 		hours.add("23:30");
 		return hours;
+	}
+
+	public static List<String> convertDateToString(Date[] week) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT);
+		List<String> list = new ArrayList<String>();
+		for(Date date : week){
+			list.add(sdf.format(date));
+		}
+		return list;
 	}
 }
 

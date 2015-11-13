@@ -43,14 +43,11 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> getUsers(String[] args) {
+	public List<User> getUsers(List<Long> args) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class, "u");
-		for(int i = 0; i < args.length; i++){
-			Criterion result= Restrictions.eq("u.id", new Long(args[i]));
-			criteria.add(result);
-		}
-		return (List<User>) criteria.list();
+		Criterion results =  Restrictions.in("u.id", args);
+		return (List<User>) criteria.add(results).list();
 	}
 
 }

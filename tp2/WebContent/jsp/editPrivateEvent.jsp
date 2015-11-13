@@ -22,13 +22,16 @@
 			$(function() {
 				$("#content").applyPrivateEvent({
 					urlContext : '${pageContext.request.contextPath}'
+					
 				});
 			});
 		</script>
 	</head>
 	<body>
 		<div id="content">
-			<form:form commandName="formPrivateEvent" action='${pageContext.request.contextPath}/savePrivateEvent.htm' method="POST">
+			<form:form commandName="formPrivateEvent" action='${pageContext.request.contextPath}/updatePrivateEvent.htm' method="POST">
+				<!--id evento -->
+				<form:hidden path="id"/>
 				<!--nombre del evento -->
 				<form:label path="name">
 					<fmt:message key="label.name" />
@@ -72,7 +75,11 @@
 				</form:label>
 				<form:input path="address"/>
 				<br/>
-				<form:button><fmt:message key="label.save"/></form:button>
+				<form:button><fmt:message key="label.edit"/></form:button>
+				<c:url value="/deleteEvent.htm" var="url" >
+					<c:param name="id" value='${formPrivateEvent.id}'/> 
+				</c:url>
+				<a href='${url}'><fmt:message key="label.delete"/></a>
 				<a href='<c:url value="/returnCalendar.htm" />'><fmt:message key="label.cancel"/></a>
 			</form:form>
 		</div>

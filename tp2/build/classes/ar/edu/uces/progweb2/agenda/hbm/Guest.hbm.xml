@@ -7,17 +7,21 @@
 		<id column="id" name="id">
 			<generator class="native" />
 		</id>
+		<property column="confirmacion" name="confirm" />
 		<many-to-one name="user"
 			column="usuarioId"
 			cascade="none"
 			not-null="true" 
+			lazy="false"
 			class="ar.edu.uces.progweb2.agenda.model.User">
 		</many-to-one>
 		<many-to-one name="meeting"
 			column="eventoId"
-			insert="false"
+			cascade="none"
+			insert="false" 
 			update="false"
 			not-null="true" 
+			lazy="false"
 			class="ar.edu.uces.progweb2.agenda.model.Meeting">
 		</many-to-one>
 	</class>

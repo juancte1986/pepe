@@ -1,21 +1,20 @@
 package ar.edu.uces.progweb2.agenda.dto;
 
-import java.util.Date;
 
 public class FormCalendarDTO {
 
-	private Date date;
+	private String date;
 	private int actualPage; // actual page solo puede tomar valores 0, 1 y -1
 
 	public FormCalendarDTO() {
 
 	}
-
-	public Date getDate() {
+	
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

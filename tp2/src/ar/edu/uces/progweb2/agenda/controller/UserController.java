@@ -60,7 +60,7 @@ public class UserController {
 
 	@RequestMapping(value = "/initFormLogin")
 	public String initFormLogin(ModelMap model, @CookieValue(value = "cookieCalendar", required = false) String cookieCalendar) {
-		if (cookieCalendar != null) {
+		if (cookieCalendar != null && !cookieCalendar.isEmpty()) {
 			FormLoginDTO form = new FormLoginDTO();
 			form.setPassword(this.cookieHelper.getPassword(cookieCalendar));
 			form.setUser(this.cookieHelper.getPassword(cookieCalendar));
@@ -106,6 +106,7 @@ public class UserController {
 		this.cookieHelper.deleteCookie(response);
 		sessionStatus.setComplete();
 		model.addAttribute("user", null);
+		model.addAttribute("formLogin", new FormLoginDTO());
 		return "/jsp/login.jsp";
 	}
 	

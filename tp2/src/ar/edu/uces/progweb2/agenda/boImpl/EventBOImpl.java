@@ -9,15 +9,16 @@ import org.springframework.stereotype.Component;
 
 import ar.edu.uces.progweb2.agenda.bo.EventBO;
 import ar.edu.uces.progweb2.agenda.dao.EventDao;
-import ar.edu.uces.progweb2.agenda.dto.EventDTO;
-import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
+import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
+import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
 import ar.edu.uces.progweb2.agenda.model.Event;
+import ar.edu.uces.progweb2.agenda.model.Meeting;
 import ar.edu.uces.progweb2.agenda.model.PrivateEvent;
 import ar.edu.uces.progweb2.agenda.model.User;
 import ar.edu.uces.progweb2.agenda.transformer.EventTransformer;
-import ar.edu.uces.progweb2.agenda.utils.CalendarUtils;
+import ar.edu.uces.progweb2.agenda.utils.EventUtils;
 
 @Component("eventBO")
 public class EventBOImpl implements EventBO{
@@ -36,11 +37,19 @@ public class EventBOImpl implements EventBO{
 	}
 
 	@Override
-	public List<EventDTO> getEvents(Date date, User user) {
-		List<EventDTO> eventsDtos = new ArrayList<EventDTO>();
-		List<Event> events = this.eventDao.getEvents(date, user);
-		for(Event event : events){
-			eventsDtos.add(this.transformer.tranformToEventDTO(event));
+	public List<DargEventDTO> getEvents(Date date, User user) {
+		List<DargEventDTO> eventsDtos = new ArrayList<DargEventDTO>();
+		List<Meeting> eventsMeeting = this.eventDao.getMeetings(date, user);
+		List<PrivateEvent> privateEvents = this.eventDao.getPrivateEvents(date, user);	
+		for(Meeting meeting : eventsMeeting){
+			DargEventDTO eventDTO =  this.transformer.tranformToDragEventDTO(meeting, user);
+			eventDTO.setIndex(EventUtils.getIndex(eventsDtos, eventDTO.getStartTime()));
+			eventsDtos.add(eventDTO);
+		}
+		for(PrivateEvent privateEvent : privateEvents){
+			DargEventDTO eventDTO =  this.transformer.tranformToDragEventDTO(privateEvent);
+			eventDTO.setIndex(EventUtils.getIndex(eventsDtos, eventDTO.getStartTime()));
+			eventsDtos.add(eventDTO);
 		}
 		return eventsDtos;
 	}
@@ -58,12 +67,14 @@ public class EventBOImpl implements EventBO{
 
 	@Override
 	public FormPrivateEventDTO getFormPrivateEventDTO(Long id) {
-		return this.transformer.tranformToFormPrivateEventDTO(this.eventDao.getById(id));
+		PrivateEvent privateEvent = (PrivateEvent) this.eventDao.getById(id);
+		return this.transformer.tranformToFormPrivateEventDTO(privateEvent);
 	}
 
 	@Override
-	public FormMeetingDTO getFormMeetingDTO(Long id) {
-		return this.transformer.tranformToFormMeetingDTO(this.eventDao.getById(id));
+	public FormMeetingDTO getFormMeetingDTO(Long id, User user) {
+		Meeting meeting = (Meeting) this.eventDao.getById(id);
+		return this.transformer.tranformToFormMeetingDTO(meeting, user);
 	}
 
 	@Override
@@ -74,6 +85,17 @@ public class EventBOImpl implements EventBO{
 	@Override
 	public void updatePrivateEvent(FormPrivateEventDTO formPrivateEventDTO) {
 		this.eventDao.update(this.transformer.tranformToPrivateEvent(formPrivateEventDTO));
+	}
+
+	@Override
+	public void update(FormDragEventDTO drag) {
+		this.eventDao.update(this.transformer.tranformToEvent(drag));
+		
+	}
+
+	@Override
+	public void delete(Long id) {
+		this.eventDao.delete(this.eventDao.getById(id));
 	}
 
 }
