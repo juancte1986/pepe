@@ -14,12 +14,53 @@ $.widget('custom.applyCalendar', {
 		this.table = this.element.find(".table");
 		this.week = new Array();
 		this.events = new Array();
+		this.drag = new Object();
 	},
 
 	_initialize : function() {
 		this._loadEventsCallback(this._getCurrentDate());
 	},
-
+	
+	_createEventDrag : function() {
+		$('.event').draggable({
+			grid: [200,20],
+			containment : '.column',
+			revert: $.proxy(this._updateEventCallback, this)
+			
+		});
+	},
+	
+	_updateEventCallback : function(event, ui) {
+		this.drag = ui.draggable;
+		var url = this.urlContext + "updateTimeEvent/" + ui.draggable.find("#id").val() ;
+		meeting={};
+		meeting.top = drag.find("#id").attr("top");
+		meeting.id = drag.find("#id").val();
+		meeting.height = drag.find("#id").attr("height");
+		$.ajax({
+			url : url,
+			type: "POST",
+			data: JSON.stringify(meeting),
+			dataType : "json",
+			contentType : "application/json;charset=UTF-8",
+			success : $.proxy(this._processEvents, this),
+			error : function() {
+				alert("Error al obtener los eventos");
+			}
+		});
+	},
+	
+	_processEvents : function(data) {
+		if(!data.error){
+			this.drag.removeClass("event");	
+			this._ordenarCeldaActual(this.drag);
+			this.drag.addClass("event");
+			this._ordenarCeldas();
+		} else {
+			alert(data.message);
+		}
+	},
+	
 	_bindEvents : function() {
 		this.element.find("#btn-next").click($.proxy(this._loadNextCalendar,this));
 		this.element.find("#btn-previous").click($.proxy(this._loadPreviuosCalendar,this));
@@ -28,7 +69,6 @@ $.widget('custom.applyCalendar', {
 	_getCurrentDate : function (){
 		var date = new Date();
 		var formCalendar = {};
-		debugger;
 		formCalendar.date= date.getDate().toString() +'/' +  (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString() ;
 		formCalendar.actualPage = 0;
 		return formCalendar;
@@ -84,30 +124,265 @@ $.widget('custom.applyCalendar', {
 	},
 	
 	_loadBody: function(data) {
-		for(var i = 0; i < data.events.length; i++){
-			this.events.push(this._createEventDiv(data.events[i]));
+		debugger;
+		for(var i = 0; i < data.eventsSunday.length; i++){
+			var event = this._createEventDiv(data.eventsSunday[i]);
+			$(event).appendTo(this.element.find('#columnSunday'));
 		}
+		
+		this._ordenarCeldas(this.element.find('#columnSunday').find('.event'));
+		
+		for(var i = 0; i < data.eventsMonday.length; i++){
+			var event = this._createEventDiv(data.eventsMonday[i]);
+			$(event).appendTo(this.element.find('#columnMonday'));
+		}
+		
+		this._ordenarCeldas(this.element.find('#columnMonday').find('.event'));
+		
+		for(var i = 0; i < data.eventsTuesday.length; i++){
+			var event = this._createEventDiv(data.eventsTuesday[i]);
+			$(event).appendTo(this.element.find('#columnTuesday'));
+		}
+		
+		
+		for(var i = 0; i < data.eventsWednesday.length; i++){
+			var event = this._createEventDiv(data.eventsWednesday[i]);
+			$(event).appendTo(this.element.find('#columnWednesday'));
+		}
+		
+		for(var i = 0; i < data.eventsThursday.length; i++){
+			var event = this._createEventDiv(data.eventsThursday[i]);
+			$(event).appendTo(this.element.find('#columnThursday'));
+		}
+		
+		for(var i = 0; i < data.eventsFriday.length; i++){
+			var event = this._createEventDiv(data.eventsFriday[i]);
+			$(event).appendTo(this.element.find('#columnFriday'));
+		}
+		
+		for(var i = 0; i < data.eventsSaturday.length; i++){
+			var event = this._createEventDiv(data.eventsSaturday[i]);
+			$(event).appendTo(this.element.find('#columnSaturday'));
+		}
+		
+		this._createEventDrag();
 	},
 	
-	__createEventDiv : function(event) {
+	_createEventDiv : function(event) {
 		// 
+		$div = $('<div class="event"></div>');
+		$div.html(event.startTime);
+		$("sorete").appendTo($div);
+		$div.html(event.endTime);
 		
-		$div = $('<div class="evento"></div>');
-		$(event.name).appendTo($div);
-		$(event.startTime).appendTo($div);
-		$(event.endTime).appendTo($div);
-		$input = $('<input type="hidden" class="indice">');
-		$input.val(event.index);
-		$($input).appendTo($div);
-		
+		$inputIndex = $('<input type="hidden" class="index">');
+		$inputIndex.val(event.index);
+		$($inputIndex).appendTo($div);
+		$inputId = $('<input type="hidden" class="id">');
+		$inputId.val(event.id);
+		$($inputId).appendTo($div);
+		$inputDate = $('<input type="hidden" class="date">');
+		$inputDate.val(event.date);
+		$($inputDate).appendTo($div);
 		// estilos
-		
 		$div.css({
-			top: event.top,
-			height: event.heiht
+			top: event.top +"px",
+			height: event.height+"px"
 		});
 		
 		return $div;
+	},
+	
+	_ordenarCeldas : function(events) {
+//		var events = $('div.event');
+			var matriz = new Array(48);
+			
+			for(var i = 0; i < matriz.length; i++){
+				matriz[i] = new Array();
+			}
+		
+			for(var i = 0; i < 48; i++){
+				array = matriz[i];
+				var top = this._obtenerTop(i);
+				for(var j = 0; j< events.length; j++){
+					var evento = $(events[j]);
+					var positionEvent = this._getPosition(evento);
+					if(positionEvent.top == top || (top > positionEvent.top && top < positionEvent.flat) ){
+						array.push(evento); 
+					}
+				}
+				if(array.length > 0){
+					this._ordenarCeldaByIndex(array, top);
+				}
+			}
+	},
+	
+	_obtenerTop: function (index) {
+		var top = 0;
+		for(var i = 0; i < 48; i++){
+			if(i == index){
+				return top;	
+			}
+			top+=25;
+		}
+	},
+	
+	_ordenarCeldaByIndex : function(array, top) {
+		array.sort(function(argA, argB) {
+			var a = $(argA);
+			var b = $(argB);
+			return parseInt(a.find(".index").val())
+					- parseInt(b.find(".index").val());
+		});
+		this._desplazar(this._ordenarArray(array, top), top);
+	},
+	
+	_ordenarArray: function(events, top) {
+		var array = new Array();
+		for(var i = 0; i < events.length; i++){
+			var evento = $(events[i]);
+			var positionEvent = this._getPosition(evento);
+			if(array.length > 0){
+				if(top != positionEvent.top){
+					if(!array[evento.find(".indice").val()]){
+						array[evento.find(".indice").val()] = evento;
+					} else {// si la posicion del array2 i ya se encuentra ocupada igualmente la reemplazo por el evento de mayor prioridad y desplazo a los demas en 1 
+						// logica para cuando tengo 2 eventos con el mismo indice, pero uno tiene mayor prioridad
+						var arrayAux = new Array();
+					    var aux = 0;
+						for(var index = parseInt(evento.find(".indice").val()); index < array.length; index++, aux++){
+							arrayAux[aux] = array[index];
+						}
+						array[evento.find(".indice").val()] = evento;
+						arrayAux = this._ordenarArray(arrayAux, top);
+						array = array.concat(arrayAux);
+					}
+					
+				} else {
+					for(var j = 0; j<array.length; j++){
+						if(!array[j]){
+							break;
+						}
+					}
+					array[j] = evento;
+				}
+			} else {
+				if(top != positionEvent.top){
+					array[evento.find(".indice").val()] = evento;
+				} else {
+					array[0] = evento;
+				}
+			}
+		}
+		return array;
+	},
+	
+	_desplazar : function (array, top) {
+		for (var i = 0; i < array.length; i++) {
+			if(array[i])
+			{
+				evento = $(array[i]);
+				positionEvent = this._getPosition(evento);
+				if(positionEvent.top == top){
+					evento.find(".index").val(i);
+					var index = i + 1;
+					var left = this._obtenerDesplazamiento(index);
+					evento.css({
+						zIndex : index,
+						left : left + "px"
+					});	
+				}
+			}
+		}
+	},
+	
+	_ordenarCeldaActual : function (drag) {
+		var events = $('div.event');
+		var array = new Array();
+		var positionDrag = this._getPosition(drag);
+		for (var i = 0; i < events.length; i++) {
+			var evento = $(events[i]);
+			positionEvent = this._getPosition(evento);
+			if ((positionEvent.top == positionDrag.top || this._existeColisionCeldaActual(positionEvent, positionDrag)) && this._existeIndice(array, evento.find(".indice").val())) {
+				if(positionEvent.top != positionDrag.top){
+					array[evento.find(".index").val()] = evento;
+				} else {
+					if(array.length > 0){
+						for(var j = 0; j < array.length; j++){
+							if(!array[j]){
+								break;
+							}
+						}
+						array[j] = evento;
+						
+					} else {
+						array[0] = evento; 
+					}
+				}
+			}
+		}
+		var index = this._getIndexLibre(array);
+		drag.find(".index").val(index);
+		index = index + 1;
+		var left = this._obtenerDesplazamiento(index);
+		drag.css({
+			left : left + "px",
+			zIndex : index,
+		});
+		drag.find(".top").val(positionDrag.top);
+	},
+	
+	_getPosition : function (object){
+		var pos = 0;
+		var position = {};
+		pos = object.css("top").indexOf("px");
+		position.top = parseInt(object.css("top").substring(0,pos));
+		pos = object.css("height").indexOf("px");
+		position.height = parseInt(object.css("height").substring(0,pos));
+		pos = object.css("left").indexOf("px");
+		position.left = parseInt(object.css("left").substring(0,pos));
+		position.flat = position.top + position.height;
+		return position;
+	},
+	
+	_existeIndice : function (array, index){
+		for(var i = 0; i < array.length; i++){
+			if(array[i]){
+				if(array[i].find(".index").val() == index){
+					return false;
+				}
+			}
+		}
+		return true;
+	},
+	
+	_existeColisionCeldaActual : function (positionEvent, positionDrag) {
+		if(positionEvent.height > positionDrag.height){
+			return  positionEvent.top < positionDrag.top && positionEvent.flat > positionDrag.flat;
+		} else {
+			return   positionEvent.top > positionDrag.top && positionEvent.flat < positionDrag.flat;
+		}
+	},
+
+	_getIndexLibre : function (array) {
+		var index = 0;
+		for (var i = 0; i < array.length; i++) {
+			if (!array[i]) {
+				index = i;
+				return index;
+			}
+		}
+		return i;
+	},
+
+	// obtiene los desplazamientos
+	_obtenerDesplazamiento : function (index) {
+		var left;
+		left = -20;
+		for (var i = 0; i < index; i++) {
+			left = left + 20;
+		}
+		return left;
 	},
 	
 	destroy : function() {

@@ -11,6 +11,7 @@ import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.exception.BackendException;
 import ar.edu.uces.progweb2.agenda.model.User;
 import ar.edu.uces.progweb2.agenda.service.EventService;
 
@@ -60,7 +61,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public void update(FormDragEventDTO drag) {
+	public void update(FormDragEventDTO drag) throws BackendException{
 		this.eventBO.update(drag);
 	}
 

@@ -8,6 +8,7 @@ import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.exception.BackendException;
 import ar.edu.uces.progweb2.agenda.model.User;
 
 public interface EventService {
@@ -19,7 +20,7 @@ public interface EventService {
 	public FormPrivateEventDTO getFormPrivateEventDTO(Long id);
 	public void updateMeeting(FormMeetingDTO eventDTO);
 	public void updatePrivateEvent(FormPrivateEventDTO eventDTO);
-	public void update(FormDragEventDTO drag);
+	public void update(FormDragEventDTO drag) throws BackendException;
 	public void delete(Long id);
 	public void setConfirmGuest(FormMeetingDTO eventDTO);
 	

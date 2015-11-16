@@ -23,6 +23,7 @@ import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormCalendarDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.exception.BackendException;
 import ar.edu.uces.progweb2.agenda.model.Hall;
 import ar.edu.uces.progweb2.agenda.model.User;
 import ar.edu.uces.progweb2.agenda.service.EventService;
@@ -75,22 +76,31 @@ public class EventController {
 		List<DargEventDTO> eventsFriday = this.eventService.getEvents(week[5], user);
 		List<DargEventDTO> eventsSaturday = this.eventService.getEvents(week[6], user);
 		
-		map.put("eventSunday", eventsSunday);
+		map.put("eventsSunday", eventsSunday);
 		map.put("eventsMonday", eventsMonday);
 		map.put("eventsTuesday", eventsTuesday);
 		map.put("eventsWednesday", eventsWednesday);
 		map.put("eventsThursday", eventsThursday);
 		map.put("eventsFriday", eventsFriday);
-		map.put("eventsMonday", eventsSaturday);
+		map.put("eventsSaturday", eventsSaturday);
 		map.put("week", CalendarUtils.convertDateToString(week));
 		return map;
 	}
 
 	@RequestMapping(value = "updateTimeEvent/{id}/")
-	public @ResponseBody void updateTimeEvent(@PathVariable("id") long id, @RequestBody FormDragEventDTO drag, ModelMap model) {
+	public @ResponseBody Map<String, Object> updateTimeEvent(@PathVariable("id") long id, @RequestBody FormDragEventDTO drag, ModelMap model) {
+		Map<String, Object> map = new HashMap<String, Object>();
 		User user = (User) model.get("user");
 		drag.setUserLogin(user);
-		this.eventService.update(drag);
+		try { 
+			this.eventService.update(drag);
+		} catch (BackendException e) {
+			e.printStackTrace();
+			map.put("error", true);
+			map.put("message", "Error al cambiar la hora de inicio de la reunion");
+		}
+		
+		return map;
 	}
 
 	@RequestMapping(value = "/newMeeting")

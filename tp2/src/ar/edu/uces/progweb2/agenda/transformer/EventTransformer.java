@@ -59,6 +59,8 @@ public class EventTransformer {
 	// list event for calendar ajax
 	public DargEventDTO tranformToDragEventDTO(PrivateEvent event) {
 		DargEventDTO dragEvent = new DargEventDTO();
+		dragEvent.setId(event.getId().toString());
+		dragEvent.setDate(CalendarUtils.getTime(event.getDate()));
 		dragEvent.setStartTime(CalendarUtils.getTime(event.getStartTime()));
 		dragEvent.setEndTime(CalendarUtils.getTime(event.getEndTime()));
 		dragEvent.setName(event.getName());
@@ -75,6 +77,8 @@ public class EventTransformer {
 	// list event for calendar ajax
 	public DargEventDTO tranformToDragEventDTO(Meeting meeting, User user) {
 		DargEventDTO dragEvent = new DargEventDTO();
+		dragEvent.setId(meeting.getId().toString());
+		dragEvent.setDate(CalendarUtils.getTime(meeting.getDate()));
 		dragEvent.setStartTime(CalendarUtils.getTime(meeting.getStartTime()));
 		dragEvent.setEndTime(CalendarUtils.getTime(meeting.getEndTime()));
 		dragEvent.setName(meeting.getName());
@@ -212,6 +216,7 @@ public class EventTransformer {
 				.getDate(EventUtils.getTime(drag.getFflat()));
 		event.setEndTime(endTime);
 		event.setStartTime(startTime);
+		
 		return event;
 	}
 

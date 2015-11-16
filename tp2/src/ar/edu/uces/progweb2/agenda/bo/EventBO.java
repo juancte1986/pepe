@@ -7,6 +7,7 @@ import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.exception.BackendException;
 import ar.edu.uces.progweb2.agenda.model.User;
 
 public interface EventBO {
@@ -25,7 +26,7 @@ public interface EventBO {
 
 	public void updatePrivateEvent(FormPrivateEventDTO eventDTO);
 
-	public void update(FormDragEventDTO drag);
+	public void update(FormDragEventDTO drag) throws BackendException;
 
 	public void delete(Long id);
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
+import ar.edu.uces.progweb2.agenda.exception.BackendException;
 import ar.edu.uces.progweb2.agenda.model.Guest;
 import ar.edu.uces.progweb2.agenda.model.Meeting;
 import ar.edu.uces.progweb2.agenda.model.PrivateEvent;
@@ -95,9 +97,12 @@ public class EventBOImpl implements EventBO{
 	}
 
 	@Override
-	public void update(FormDragEventDTO drag) {
-		this.eventDao.update(this.transformer.tranformToEvent(drag));
-		
+	public void update(FormDragEventDTO drag) throws BackendException {
+		try{
+			this.eventDao.update(this.transformer.tranformToEvent(drag));
+		} catch(HibernateException e){
+			throw new BackendException(e);
+		}
 	}
 
 	@Override

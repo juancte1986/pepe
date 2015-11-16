@@ -2,7 +2,9 @@ package ar.edu.uces.progweb2.agenda.dto;
 
 public class DargEventDTO {
 
+	private String id;
 	private String name;
+	private String date;
 	private String startTime;
 	private String endTime;
 	private String estado;
@@ -14,7 +16,22 @@ public class DargEventDTO {
 	private boolean isOwner = false;
 	private boolean isGuest = false;
 	
+	public String getId() {
+		return id;
+	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+	
 	public boolean getIsConfirm() {
 		return isConfirm;
 	}

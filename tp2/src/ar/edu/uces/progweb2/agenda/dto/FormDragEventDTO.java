@@ -7,7 +7,6 @@ public class FormDragEventDTO {
 	private String id;
 	private User userLogin;
 	private int top;
-	private int event;
 	private int height; // lo obtengo de div
 
 	public User getUserLogin() {
@@ -34,14 +33,6 @@ public class FormDragEventDTO {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public int getEvent() {
-		return event;
-	}
-
-	public void setEvent(int event) {
-		this.event = event;
 	}
 
 	public int getHeight() {
