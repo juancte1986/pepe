@@ -29,4 +29,6 @@ public interface EventBO {
 
 	public void delete(Long id);
 
+	public void setConfirmGuest(FormMeetingDTO eventDTO);
+
 }

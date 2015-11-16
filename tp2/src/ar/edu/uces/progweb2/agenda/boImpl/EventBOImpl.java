@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 
 import ar.edu.uces.progweb2.agenda.bo.EventBO;
 import ar.edu.uces.progweb2.agenda.dao.EventDao;
+import ar.edu.uces.progweb2.agenda.dao.GuestDao;
 import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
-import ar.edu.uces.progweb2.agenda.model.Event;
+import ar.edu.uces.progweb2.agenda.model.Guest;
 import ar.edu.uces.progweb2.agenda.model.Meeting;
 import ar.edu.uces.progweb2.agenda.model.PrivateEvent;
 import ar.edu.uces.progweb2.agenda.model.User;
@@ -25,6 +26,12 @@ public class EventBOImpl implements EventBO{
 	
 	private EventDao eventDao;
 	private EventTransformer transformer;
+	private GuestDao guestDao;
+
+	@Autowired
+	public void setGuestDao(GuestDao guestDao) {
+		this.guestDao = guestDao;
+	}
 
 	@Autowired
 	public void setEventDao(EventDao eventDao) {
@@ -97,5 +104,20 @@ public class EventBOImpl implements EventBO{
 	public void delete(Long id) {
 		this.eventDao.delete(this.eventDao.getById(id));
 	}
+
+	@Override
+	public void setConfirmGuest(FormMeetingDTO eventDTO) {
+		Guest guest = this.guestDao.getGuest(eventDTO);
+		guest.setConfirm(eventDTO.getIsConfirm());
+		this.guestDao.update(guest);
+		
+	}
+	
+//	private List<Guest> getGuests(String eliminateGuests){
+//		String [] args = eliminateGuests.split(",");
+//		List<Guest> guests = new ArrayList<Guest>();
+//		this.eventDao.getGuests(args);
+//		return guests;
+//	}
 
 }

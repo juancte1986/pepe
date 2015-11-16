@@ -68,4 +68,9 @@ public class EventServiceImpl implements EventService {
 	public void delete(Long id) {
 		this.eventBO.delete(id);
 	}
+
+	@Override
+	public void setConfirmGuest(FormMeetingDTO eventDTO) {
+		this.eventBO.setConfirmGuest(eventDTO);
+	}
 }

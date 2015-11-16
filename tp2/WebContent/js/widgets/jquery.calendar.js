@@ -13,6 +13,7 @@ $.widget('custom.applyCalendar', {
 		this.urlContext = this.options.urlContext;
 		this.table = this.element.find(".table");
 		this.week = new Array();
+		this.events = new Array();
 	},
 
 	_initialize : function() {
@@ -83,10 +84,30 @@ $.widget('custom.applyCalendar', {
 	},
 	
 	_loadBody: function(data) {
-//		var events = data.events; 
-//		for(var i = 0 ; i < events.length; i++){
-//			debugger;
-//		}
+		for(var i = 0; i < data.events.length; i++){
+			this.events.push(this._createEventDiv(data.events[i]));
+		}
+	},
+	
+	__createEventDiv : function(event) {
+		// 
+		
+		$div = $('<div class="evento"></div>');
+		$(event.name).appendTo($div);
+		$(event.startTime).appendTo($div);
+		$(event.endTime).appendTo($div);
+		$input = $('<input type="hidden" class="indice">');
+		$input.val(event.index);
+		$($input).appendTo($div);
+		
+		// estilos
+		
+		$div.css({
+			top: event.top,
+			height: event.heiht
+		});
+		
+		return $div;
 	},
 	
 	destroy : function() {

@@ -150,6 +150,11 @@ public class EventController {
 		model.addAttribute("formMeeting", form);
 		model.addAttribute("halls", halls);
 		model.addAttribute("hours", CalendarUtils.getHours());
+		if(form.getIsOwner()){
+			model.addAttribute("url", "/updateMeeting.htm");
+		} else {
+			model.addAttribute("url", "/updateConfirm.htm");
+		}
 		return "/jsp/editMeeting.jsp";
 	}
 	
@@ -162,8 +167,7 @@ public class EventController {
 	}
 	
 	@RequestMapping(value = "/updateMeeting")
-	public String updateMeeting(@ModelAttribute("formMeeting") FormMeetingDTO eventDTO,
-			ModelMap model, BindingResult result) {
+	public String updateMeeting(@ModelAttribute("formMeeting") FormMeetingDTO eventDTO, ModelMap model, BindingResult result) {
 		this.meetingValidator.validate(eventDTO, result);
 		if (result.hasErrors()) {
 			List<Hall> halls = this.hallService.getHalls();
@@ -178,8 +182,7 @@ public class EventController {
 	}
 	
 	@RequestMapping(value = "/updatePrivateEvent")
-	public String updatePrivateEvent(@ModelAttribute("formPrivateEvent") FormPrivateEventDTO eventDTO,
-			ModelMap model, BindingResult result) {
+	public String updatePrivateEvent(@ModelAttribute("formPrivateEvent") FormPrivateEventDTO eventDTO, ModelMap model, BindingResult result) {
 		this.privateEventValidator.validate(eventDTO, result);
 		if (result.hasErrors()) {
 			List<Hall> halls = this.hallService.getHalls();
@@ -196,6 +199,16 @@ public class EventController {
 	@RequestMapping(value = "/deleteEvent")
 	public String deleteEvent(@RequestParam("id") Long id) {
 		this.eventService.delete(id);
+		return "/jsp/calendar.jsp";
+	}
+	
+	@RequestMapping(value = "/updateConfirm")
+	public String updateConfirm(@ModelAttribute("formMeeting") FormMeetingDTO eventDTO, ModelMap model) {
+		User user = (User) model.get("user");
+		eventDTO.setUserLogin(user);
+		if(eventDTO.getIsConfirm()){
+			this.eventService.setConfirmGuest(eventDTO);
+		}
 		return "/jsp/calendar.jsp";
 	}
 

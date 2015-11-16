@@ -21,5 +21,6 @@ public interface EventService {
 	public void updatePrivateEvent(FormPrivateEventDTO eventDTO);
 	public void update(FormDragEventDTO drag);
 	public void delete(Long id);
+	public void setConfirmGuest(FormMeetingDTO eventDTO);
 	
 }

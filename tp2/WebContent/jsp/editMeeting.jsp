@@ -15,16 +15,13 @@
 		<link rel="stylesheet"
 			href="${pageContext.request.contextPath}/css/jquery-ui.css"
 			type="text/css" />
-		<link rel="stylesheet"
-			href="${pageContext.request.contextPath}/css/bootstrap.css"
-			type="text/css" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.css" type="text/css" />
 		</head>
 	<body>
 		<!-- editar, crear y borrar event -->
 		<div id="content">
-			<form:form commandName="formMeeting"
-				action='${pageContext.request.contextPath}/updateMeeting.htm'
-				method="POST">
+			<c:url value="${url}" var="urlAction"/>
+			<form:form commandName="formMeeting" action='${urlAction}' method="POST">
 				<!--id evento -->
 				<form:hidden path="id" />
 				<!--nombre -->
@@ -74,37 +71,38 @@
 				</form:select>
 				<br />
 				<!--Solo si sos invitado, si se pone en true, no se modifica mas-->
+				
 				<form:label class="guest" path="isConfirm">
 					<fmt:message key="label.confirm" />
 				</form:label>
 				<form:checkbox class="guest" path="isConfirm" />
 				<br />
+				
 				<!--invitados-->
-				<form:label path="guestsIds">
-					<fmt:message key="label.guests" />
-				</form:label>
+				<fmt:message key="label.guests" />
 				<!-- se ingrea el user para el autocompletar -->
 				<input class="owner" id="inputGuest" />
-				<!-- va almacenar los ids de los user -->
-				<form:hidden id="hiddenGuestsIds" path="guestsIds" />
-				<form:errors path="guestsIds" cssStyle="color: red" />
-				<!-- va a guardar el id actual -->
+				<!-- va almacenar los ids de los user nuevos -->
+				<form:hidden id="guestsIds" path="guestsIds" />
+				<!-- va almacenar los ids de los user nuevos -->
 				<input type="hidden" id="hiddenGuestId" />
 				<!-- va a cargar el user actual -->
-				<a id="btn-addUser" href="#">Agregar usuario</a>
+				<a class="linkDelete" id="btn-addUser" href="#">Agregar usuario</a>
 				<!-- va listar los usuarios seleccionados del autocompletar -->
 				<ul id="ulGuests">
 				</ul>
-				<form:button id="#btn-edit">
+				<form:button id="btn-edit">
 					<fmt:message key="label.edit" />
 				</form:button>
-				<c:url value="/deleteEvent.htm" var="url" >
-					<c:param name="id" value='${formMeeting.id}'/> 
-				</c:url>
-				<a class="owner" href='${url}'><fmt:message key="label.delete"/></a>
-				<a href='<c:url value="/returnCalendar.htm" />'><fmt:message key="label.cancel" /></a>
 			</form:form>
+			
+			<c:url value="/deleteEvent.htm" var="urlDelete" >
+					<c:param name="id" value='${formMeeting.id}'/> 
+			</c:url>
+			<a class="linkDelete" href='${urlDelete}'><fmt:message key="label.delete"/></a>
+			<a href='<c:url value="/returnCalendar.htm" />'><fmt:message key="label.cancel" /></a>
 		</div>
+				
 		<!-- js -->
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-1.11.3.js"></script>
 		<script src="${pageContext.request.contextPath}/js/lib/jquery-ui.js"></script>
@@ -113,7 +111,6 @@
 				$(function() {
 					$("#content").applyMeeting({
 						urlContext : '${pageContext.request.contextPath}',
-						guestIds: '${formMeeting.guestsIds}',
 						guestsNames: ${formMeeting.guestsNames},
 						isOwner:${formMeeting.isOwner},
 						isGuest:${formMeeting.isGuest},

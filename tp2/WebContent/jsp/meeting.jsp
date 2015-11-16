@@ -22,7 +22,6 @@
 			$(function() {
 				$("#content").applyMeeting({
 					urlContext : '${pageContext.request.contextPath}',
-					guestIds: '${formMeeting.guestsIds}',
 				});
 			});
 		</script>
@@ -85,7 +84,7 @@
                 <!-- se ingrea el user para el autocompletar -->
 				<input id="inputGuest"/>
 				 <!-- va almacenar los ids de los user -->
-				<form:hidden id="hiddenGuestsIds" path="guestsIds" />
+				<form:hidden id="guestsIds" path="guestsIds" />
 				<form:errors path="guestsIds" cssStyle="color: red" />
 				<!-- va a guardar el id actual -->
 				<input type="hidden" id="hiddenGuestId" />

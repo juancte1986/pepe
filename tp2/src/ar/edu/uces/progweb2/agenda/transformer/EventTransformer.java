@@ -10,16 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ar.edu.uces.progweb2.agenda.dao.EventDao;
+import ar.edu.uces.progweb2.agenda.dao.GuestDao;
 import ar.edu.uces.progweb2.agenda.dao.HallDao;
 import ar.edu.uces.progweb2.agenda.dao.UserDao;
 import ar.edu.uces.progweb2.agenda.dto.FormDragEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.DargEventDTO;
-import ar.edu.uces.progweb2.agenda.dto.FormEventDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormMeetingDTO;
 import ar.edu.uces.progweb2.agenda.dto.FormPrivateEventDTO;
 import ar.edu.uces.progweb2.agenda.model.Event;
 import ar.edu.uces.progweb2.agenda.model.Guest;
-import ar.edu.uces.progweb2.agenda.model.HallMeeting;
 import ar.edu.uces.progweb2.agenda.model.Meeting;
 import ar.edu.uces.progweb2.agenda.model.PrivateEvent;
 import ar.edu.uces.progweb2.agenda.model.User;
@@ -30,9 +29,17 @@ import ar.edu.uces.progweb2.agenda.utils.JsonUtils;
 @Component
 public class EventTransformer {
 
+	private static final String MEETING = "meeting";
+	private static final String PRIVATE_EVENT = "privateEvent";
 	private UserDao userDao;
 	private HallDao hallDao;
 	private EventDao eventDao;
+	private GuestDao guestDao; 
+
+	@Autowired
+	public void setGuestDao(GuestDao guestDao) {
+		this.guestDao = guestDao;
+	}
 
 	@Autowired
 	public void setEventDao(EventDao eventDao) {
@@ -48,8 +55,8 @@ public class EventTransformer {
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
-	
-	//list event for calendar ajax
+
+	// list event for calendar ajax
 	public DargEventDTO tranformToDragEventDTO(PrivateEvent event) {
 		DargEventDTO dragEvent = new DargEventDTO();
 		dragEvent.setStartTime(CalendarUtils.getTime(event.getStartTime()));
@@ -61,10 +68,11 @@ public class EventTransformer {
 				CalendarUtils.getTime(event.getStartTime()),
 				CalendarUtils.getTime(event.getEndTime())));
 		dragEvent.setIsOwner(true);
+		dragEvent.setTipo(PRIVATE_EVENT);
 		return dragEvent;
 	}
-	
-	//list event for calendar ajax
+
+	// list event for calendar ajax
 	public DargEventDTO tranformToDragEventDTO(Meeting meeting, User user) {
 		DargEventDTO dragEvent = new DargEventDTO();
 		dragEvent.setStartTime(CalendarUtils.getTime(meeting.getStartTime()));
@@ -75,30 +83,39 @@ public class EventTransformer {
 		dragEvent.setHeight(EventUtils.getHeight(
 				CalendarUtils.getTime(meeting.getStartTime()),
 				CalendarUtils.getTime(meeting.getEndTime())));
-		if(meeting.getId() == user.getId()){
+		if (meeting.getId() == user.getId()) {
 			dragEvent.setIsOwner(true);
 		} else {
 			dragEvent.setIsGuest(true);
-			if((isConfirmGuest(meeting.getGuests(), user.getId()))){
+			if ((isConfirmGuest(meeting.getGuests(), user.getId()))) {
 				dragEvent.setIsConfirm(true);
 			}
 		}
+		dragEvent.setTipo(MEETING);
 		return dragEvent;
 	}
-	
-	//save and update an event
+
+	// save and update an event
 	public Meeting tranformToMeeting(FormMeetingDTO formMeetingDTO) {
 		Meeting event;
 		if (formMeetingDTO.getId() != null) {
 			event = (Meeting) this.eventDao.getById(formMeetingDTO.getId());
-		} else{
+			Set<Guest> newGuests = this
+					.getGuests(formMeetingDTO.getGuestsIds());
+			if (newGuests.size() > 0) {
+				event.setGuests(this.getGuests(formMeetingDTO.getGuestsIds(),
+						formMeetingDTO.getId()));
+			}
+		} else {
 			event = new Meeting();
+			if(!formMeetingDTO.getGuestsIds().isEmpty()){
+				event.setGuests(this.getGuests(formMeetingDTO.getGuestsIds()));
+			}
 		}
 		event.setDate(CalendarUtils.getDate(formMeetingDTO.getDate()));
 		event.setName(formMeetingDTO.getName());
 		event.setOwner(formMeetingDTO.getUserLogin());
 		event.setTheme(formMeetingDTO.getTheme());
-		event.setGuests(this.getGuests(formMeetingDTO.getGuestsIds()));
 		String start = formMeetingDTO.getDate() + " "
 				+ formMeetingDTO.getStartTime();
 		String end = formMeetingDTO.getDate() + " "
@@ -110,12 +127,15 @@ public class EventTransformer {
 		event.setHall(this.hallDao.getById(formMeetingDTO.getHallId()));
 		return event;
 	}
-	
-	//save and update an event
-	public PrivateEvent tranformToPrivateEvent(FormPrivateEventDTO formPrivateEventDTO) {
-		PrivateEvent event;  new PrivateEvent();
+
+	// save and update an event
+	public PrivateEvent tranformToPrivateEvent(
+			FormPrivateEventDTO formPrivateEventDTO) {
+		PrivateEvent event;
+		new PrivateEvent();
 		if (formPrivateEventDTO.getId() != null) {
-			event = (PrivateEvent) this.eventDao.getById(formPrivateEventDTO.getId());
+			event = (PrivateEvent) this.eventDao.getById(formPrivateEventDTO
+					.getId());
 		} else {
 			event = new PrivateEvent();
 			event.setOwner(formPrivateEventDTO.getUserLogin());
@@ -135,7 +155,7 @@ public class EventTransformer {
 
 		return event;
 	}
-	
+
 	// completa el form del evento privado para editar
 	public FormPrivateEventDTO tranformToFormPrivateEventDTO(Event event) {
 		PrivateEvent privateEvent = (PrivateEvent) event;
@@ -151,7 +171,7 @@ public class EventTransformer {
 
 		return form;
 	}
-	
+
 	// completa el form de la meeting para editar
 	public FormMeetingDTO tranformToFormMeetingDTO(Meeting meeting, User user) {
 		FormMeetingDTO form = new FormMeetingDTO();
@@ -162,24 +182,22 @@ public class EventTransformer {
 		form.setDate(CalendarUtils.convertDateToString(meeting.getDate()));
 		form.setHallId(meeting.getHall().getId());
 		form.setTheme(meeting.getTheme());
-		form.setGuestsIds(this.getGuestsIds(meeting.getGuests()));
-		form.setGuestsNames(JsonUtils.serializer(this.getGuestsNames(meeting.getGuests())));
-		if(meeting.getOwner().getId() == user.getId()){
+		form.setGuestsNames(JsonUtils.serializer(this.getGuestsNames(meeting
+				.getGuests())));
+		if (meeting.getOwner().getId() == user.getId()) {
 			form.setIsOwner(true);
 		} else {
 			form.setIsGuest(true);
-			if(isConfirmGuest(meeting.getGuests(), user.getId())){
+			if (isConfirmGuest(meeting.getGuests(), user.getId())) {
 				form.setIsConfirm(true);
 			}
 		}
 		return form;
 	}
 
-	
-
 	private boolean isConfirmGuest(Set<Guest> guests, Long id) {
-		for(Guest guest : guests){
-			if(guest.getUser().getId() == id){
+		for (Guest guest : guests) {
+			if (guest.getUser().getId() == id) {
 				return guest.getConfirm();
 			}
 		}
@@ -196,7 +214,7 @@ public class EventTransformer {
 		event.setStartTime(startTime);
 		return event;
 	}
-	
+
 	private Set<Guest> getGuests(String guestsIds) {
 		String arg[] = guestsIds.split(",");
 		List<Long> ids = this.getArrayLong(arg);
@@ -209,10 +227,54 @@ public class EventTransformer {
 		}
 		return guests;
 	}
-	
+
+	private Set<Guest> getGuests(String guestsIds, Long eventoid) {
+		String arg[] = guestsIds.split(",");
+		List<Long> ids = this.getArrayLong(arg);
+		Set<Guest> newGuests = new HashSet<Guest>();
+		List<Guest> listGuests = this.guestDao.getGuests(eventoid);
+		// los nuevos usuario
+		for (Long id : ids) {
+			if (!isGuestById(listGuests, new Long(id))) {
+				User user = this.userDao.getById(new Long(id));
+				Guest guest = new Guest();
+				guest.setUser(user);
+				newGuests.add(guest);
+			}
+		}
+		// elimino los usuarios
+		for (Guest guest : listGuests) {
+			Guest eliminateGuest = this.getElimnateGuest(guest, ids);
+			if (eliminateGuest != null) {
+				this.guestDao.delete(eliminateGuest);
+			}
+		}
+
+		return newGuests;
+	}
+
+	private Guest getElimnateGuest(Guest guest, List<Long> ids) {
+		for (Long id : ids) {
+			if (id.equals(guest.getUser().getId())) {
+				return null;
+			}
+		}
+
+		return guest;
+	}
+
+	private boolean isGuestById(List<Guest> guests, Long id) {
+		for (Guest guest : guests) {
+			if (id.equals(guest.getUser().getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private List<Long> getArrayLong(String[] ids) {
-		List<Long> array  = new ArrayList<Long>();
-		for(int i = 0; i<ids.length ; i++){
+		List<Long> array = new ArrayList<Long>();
+		for (int i = 0; i < ids.length; i++) {
 			array.add(new Long(ids[i]));
 		}
 		return array;
@@ -223,23 +285,8 @@ public class EventTransformer {
 		for (Guest guest : guests) {
 			User user = guest.getUser();
 			names.add(user.getName() + " " + user.getSurname() + " ("
-					+ user.getUser() + ")," + user.getId().toString());
+					+ user.getUser() + ")," + user.getId().toString() + "," + guest.getConfirm());
 		}
 		return names;
 	}
-
-	private String getGuestsIds(Set<Guest> guests) {
-		String cadena = "";
-		int cont = 0;
-		for (Guest guest : guests) {
-			if (cont == (guests.size() - 1)) {
-				cadena += guest.getUser().getId().toString();
-			} else {
-				cadena += guest.getUser().getId().toString() + ",";
-			}
-		}
-		return cadena;
-	}
-	
-
 }

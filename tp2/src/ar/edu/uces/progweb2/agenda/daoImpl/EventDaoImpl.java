@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import ar.edu.uces.progweb2.agenda.dao.EventDao;
 import ar.edu.uces.progweb2.agenda.model.Event;
+import ar.edu.uces.progweb2.agenda.model.Guest;
 import ar.edu.uces.progweb2.agenda.model.Meeting;
 import ar.edu.uces.progweb2.agenda.model.PrivateEvent;
 import ar.edu.uces.progweb2.agenda.model.User;
@@ -40,6 +40,16 @@ public class EventDaoImpl extends GenericDaoImpl<Event> implements EventDao {
 		Criterion resultDate = Restrictions.eq("p.date", date);
 		Criterion resultOwner = Restrictions.eq("p.owner.id", user.getId());
 		return (List<PrivateEvent>) criteria.add(Restrictions.and(resultDate, resultOwner)).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Guest> getGuests(String[] args) {
+		Session session =  sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(Guest.class,"g");
+		criteria.createAlias("user", "u");
+		Criterion result = Restrictions.in("u.id", args);
+		return (List<Guest>) criteria.add(result).list();
 	}
 
 }

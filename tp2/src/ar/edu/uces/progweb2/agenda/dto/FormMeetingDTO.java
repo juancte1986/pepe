@@ -4,11 +4,21 @@ public class FormMeetingDTO extends FormEventDTO {
 
 	private String theme;
 	private Long hallId;
-	private String guestsIds;
 	private String guestsNames;
+	private String guestsIds;
 	private boolean isConfirm = false;
 	private boolean isOwner = false;
 	private boolean isGuest = false;
+	
+	
+
+	public String getGuestsIds() {
+		return guestsIds;
+	}
+
+	public void setGuestsIds(String guestsIds) {
+		this.guestsIds = guestsIds;
+	}
 
 	public boolean getIsGuest() {
 		return isGuest;
@@ -16,10 +26,6 @@ public class FormMeetingDTO extends FormEventDTO {
 
 	public void setIsGuest(boolean isGuest) {
 		this.isGuest = isGuest;
-	}
-
-	public String getGuestsIds() {
-		return guestsIds;
 	}
 
 	public boolean getIsConfirm() {
@@ -36,10 +42,6 @@ public class FormMeetingDTO extends FormEventDTO {
 
 	public void setIsOwner(boolean isOwner) {
 		this.isOwner = isOwner;
-	}
-
-	public void setGuestsIds(String guestsIds) {
-		this.guestsIds = guestsIds;
 	}
 
 	public String getTheme() {

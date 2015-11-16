@@ -21,7 +21,6 @@ public class MeetingValidator implements Validator{
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors,"guestsIds", "errors.event.guests.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "errors.event.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "date", "errors.event.date.empty");
 		

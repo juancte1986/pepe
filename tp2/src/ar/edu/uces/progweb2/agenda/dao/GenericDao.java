@@ -5,7 +5,6 @@ import java.util.List;
 
 public abstract interface GenericDao <T> {
 
-	public void delete(T object);
 	
 	public void save(T object);
 	
@@ -17,4 +16,5 @@ public abstract interface GenericDao <T> {
 	
 	public List<T> findAll();
 	
+	public void delete(T object);
 }
