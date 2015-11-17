@@ -247,5 +247,15 @@ public class CalendarUtils {
 		}
 		return list;
 	}
+
+	public static Date getDate(Date date, String time) {
+		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT + " HH:mm");
+		Date dateReturn = new Date();
+		try {
+			dateReturn = sdf.parse(convertDateToString(date) +" "+ time);
+		} catch (ParseException e) {
+		}
+		return dateReturn;
+	}
 }
 

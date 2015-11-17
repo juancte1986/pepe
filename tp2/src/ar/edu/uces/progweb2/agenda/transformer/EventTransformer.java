@@ -211,9 +211,9 @@ public class EventTransformer {
 	public Event tranformToEvent(FormDragEventDTO drag) {
 		Event event = this.eventDao.getById(new Long(drag.getId()));
 		Date startTime = CalendarUtils
-				.getDate(EventUtils.getTime(drag.getTop()));
+				.getDate(event.getDate(), EventUtils.getTime(drag.getTop()));
 		Date endTime = CalendarUtils
-				.getDate(EventUtils.getTime(drag.getFflat()));
+				.getDate(event.getDate(), EventUtils.getTime(drag.getFlat()));
 		event.setEndTime(endTime);
 		event.setStartTime(startTime);
 		

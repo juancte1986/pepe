@@ -87,8 +87,8 @@ public class EventController {
 		return map;
 	}
 
-	@RequestMapping(value = "updateTimeEvent/{id}/")
-	public @ResponseBody Map<String, Object> updateTimeEvent(@PathVariable("id") long id, @RequestBody FormDragEventDTO drag, ModelMap model) {
+	@RequestMapping(value = "/updateTimeEvent/{id}", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> updateTimeEvent(@PathVariable("id") Long id, @RequestBody FormDragEventDTO drag, ModelMap model) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = (User) model.get("user");
 		drag.setUserLogin(user);

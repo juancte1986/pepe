@@ -137,12 +137,13 @@ public class EventUtils {
 	}
 
 	public static String getTime(int top) {
-	    String time="";
+		String time="";
 		Map<String, EventHelper> map = getMapTop();
 	    for (Entry<String, EventHelper> e: map.entrySet()) {
 	         EventHelper event = e.getValue();
 	         if(event.getTop() == top){
 	        	 time = e.getKey();
+	        	 break;
 	         }
 	    }
 	    return time;

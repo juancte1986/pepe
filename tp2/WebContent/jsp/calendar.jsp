@@ -64,13 +64,13 @@
 						 		<div style="top: 910px">12:30</div><div style="top: 930px">23:00</div><div style="top: 950px">23:30</div>
 						 	</div>
 					 	</th>
-						<td><div class="column" id="columnSunday"></div></td>
-						<td><div class="column" id="columnMonday"></div></td>
-						<td><div class="column" id="columnTuesday"></div></td>
-						<td><div class="column" id="columnWednesday"></div></td>
-						<td><div class="column" id="columnThursday"></div></td>
-						<td><div class="column" id="columnFriday"></div></td>
-						<td><div class="column" id="columnSaturday"></div></td>
+						<td><div class="columnSunday"></div></td>
+						<td><div class="columnMonday"></div></td>
+						<td><div class="columnTuesday"></div></td>
+						<td><div class="columnWednesday"></div></td>
+						<td><div class="columnThursday"></div></td>
+						<td><div class="columnFriday"></div></td>
+						<td><div class="columnSaturday"></div></td>
 					</tr>
 				</tbody>
 			</table>

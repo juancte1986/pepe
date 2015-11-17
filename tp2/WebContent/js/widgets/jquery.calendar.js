@@ -21,22 +21,26 @@ $.widget('custom.applyCalendar', {
 		this._loadEventsCallback(this._getCurrentDate());
 	},
 	
-	_createEventDrag : function() {
-		$('.event').draggable({
+	_createEventDrag : function(event,column) {
+		$(event).draggable({
 			grid: [200,20],
-			containment : '.column',
-			revert: $.proxy(this._updateEventCallback, this)
+			containment : column,
+			revert :  $.proxy(this._updateEventCallback,this)
+//			stop: $.proxy(this._updateEventCallback,this)
 			
 		});
 	},
 	
 	_updateEventCallback : function(event, ui) {
-		this.drag = ui.draggable;
-		var url = this.urlContext + "updateTimeEvent/" + ui.draggable.find("#id").val() ;
+		debugger;
+		this.drag = $(ui.helper[0]);
+		var url = this.urlContext + "/services/updateTimeEvent/" + this.drag.find(".id").val() ;
 		meeting={};
-		meeting.top = drag.find("#id").attr("top");
-		meeting.id = drag.find("#id").val();
-		meeting.height = drag.find("#id").attr("height");
+		meeting.id = this.drag.find(".id").val();
+		var position = this._getPosition(this.drag);
+		meeting.top = position.top;
+		meeting.height = position.height;
+		meeting.flat = position.flat;
 		$.ajax({
 			url : url,
 			type: "POST",
@@ -44,19 +48,25 @@ $.widget('custom.applyCalendar', {
 			dataType : "json",
 			contentType : "application/json;charset=UTF-8",
 			success : $.proxy(this._processEvents, this),
-			error : function() {
-				alert("Error al obtener los eventos");
-			}
+			error : $.proxy(this._processError, this)
 		});
+		return false;
+	},
+	
+	_processError : function (){
+		this.drag.draggable("option", "revert", true);
+		alert("Error al obtener los eventos: "+this.drag.draggable("option", "revert"));
 	},
 	
 	_processEvents : function(data) {
 		if(!data.error){
+			alert(data.message);
 			this.drag.removeClass("event");	
 			this._ordenarCeldaActual(this.drag);
 			this.drag.addClass("event");
 			this._ordenarCeldas();
 		} else {
+			this.drag.draggable("option", "revert", true);
 			alert(data.message);
 		}
 	},
@@ -124,57 +134,85 @@ $.widget('custom.applyCalendar', {
 	},
 	
 	_loadBody: function(data) {
-		debugger;
 		for(var i = 0; i < data.eventsSunday.length; i++){
-			var event = this._createEventDiv(data.eventsSunday[i]);
-			$(event).appendTo(this.element.find('#columnSunday'));
+			var event = this._createEventDiv(data.eventsSunday[i], 0);
+			$(event).appendTo(this.element.find('.columnSunday'));
 		}
+		this._createEventDrag(".eventsSunday", ".columnSunday");
+		this._ordenarCeldas($("div.eventsSunday"));
 		
-		this._ordenarCeldas(this.element.find('#columnSunday').find('.event'));
-		
+		debugger;
 		for(var i = 0; i < data.eventsMonday.length; i++){
-			var event = this._createEventDiv(data.eventsMonday[i]);
-			$(event).appendTo(this.element.find('#columnMonday'));
+			var event = this._createEventDiv(data.eventsMonday[i], 1);
+			$(event).appendTo(this.element.find('.columnMonday'));
 		}
 		
-		this._ordenarCeldas(this.element.find('#columnMonday').find('.event'));
+		this._createEventDrag(".eventsMonday", ".columnMonday");
+		this._ordenarCeldas($("div.eventsMonday"));
 		
 		for(var i = 0; i < data.eventsTuesday.length; i++){
-			var event = this._createEventDiv(data.eventsTuesday[i]);
-			$(event).appendTo(this.element.find('#columnTuesday'));
+			var event = this._createEventDiv(data.eventsTuesday[i], 2);
+			$(event).appendTo(this.element.find('.columnTuesday'));
 		}
-		
+		this._createEventDrag(".eventsTuesday", ".columnTuesday");
+		this._ordenarCeldas($("div.eventsTuesday"));
 		
 		for(var i = 0; i < data.eventsWednesday.length; i++){
-			var event = this._createEventDiv(data.eventsWednesday[i]);
-			$(event).appendTo(this.element.find('#columnWednesday'));
+			var event = this._createEventDiv(data.eventsWednesday[i], 3);
+			$(event).appendTo(this.element.find('.columnWednesday'));
 		}
+		this._createEventDrag(".eventsWednesday", ".columnWednesday");
+		this._ordenarCeldas($("div.eventsWednesday"));
 		
 		for(var i = 0; i < data.eventsThursday.length; i++){
-			var event = this._createEventDiv(data.eventsThursday[i]);
-			$(event).appendTo(this.element.find('#columnThursday'));
+			var event = this._createEventDiv(data.eventsThursday[i], 4);
+			$(event).appendTo(this.element.find('.columnThursday'));
 		}
+		this._createEventDrag(".eventsTuesday" , ".columnTuesday");
+		this._ordenarCeldas($("div.eventsTuesday"));
 		
 		for(var i = 0; i < data.eventsFriday.length; i++){
-			var event = this._createEventDiv(data.eventsFriday[i]);
-			$(event).appendTo(this.element.find('#columnFriday'));
+			var event = this._createEventDiv(data.eventsFriday[i], 5);
+			$(event).appendTo(this.element.find('.columnFriday'));
 		}
+		this._createEventDrag(".eventsFriday", ".columnFriday");
+		this._ordenarCeldas($("div.eventsFriday"));
 		
 		for(var i = 0; i < data.eventsSaturday.length; i++){
-			var event = this._createEventDiv(data.eventsSaturday[i]);
-			$(event).appendTo(this.element.find('#columnSaturday'));
+			var event = this._createEventDiv(data.eventsSaturday[i], 6);
+			$(event).appendTo(this.element.find('.columnSaturday'));
 		}
-		
-		this._createEventDrag();
+		this._createEventDrag(".eventsSaturday", ".columnSaturda");
+		this._ordenarCeldas($("div.eventsSaturday"));
 	},
 	
-	_createEventDiv : function(event) {
-		// 
-		$div = $('<div class="event"></div>');
+	_createEventDiv : function(event, day) {
+		
+		if(day == 0){
+			$div = $('<div class="eventsSunday"></div>');
+		}
+		if(day == 1){
+			$div = $('<div class="eventsMonday"></div>');
+		}
+		if(day == 2){
+			$div = $('<div class="eventsTuesday"></div>');
+		}
+		if(day == 3){
+			$div = $('<div class="eventsWednesday"></div>');
+		}
+		if(day == 4){
+			$div = $('<div class="eventsThursday"></div>');
+		}
+		if(day == 5){
+			$div = $('<div class="eventsFriday"></div>');
+		}
+		if(day == 6){
+			$div = $('<div class="eventsSaturday"></div>');
+		}
+		
 		$div.html(event.startTime);
 		$("sorete").appendTo($div);
 		$div.html(event.endTime);
-		
 		$inputIndex = $('<input type="hidden" class="index">');
 		$inputIndex.val(event.index);
 		$($inputIndex).appendTo($div);

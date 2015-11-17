@@ -8,6 +8,7 @@ public class FormDragEventDTO {
 	private User userLogin;
 	private int top;
 	private int height; // lo obtengo de div
+	private int flat;
 
 	public User getUserLogin() {
 		return userLogin;
@@ -16,15 +17,13 @@ public class FormDragEventDTO {
 	public void setUserLogin(User userLogin) {
 		this.userLogin = userLogin;
 	}
-
-	private int fflat;
-
-	public int getFflat() {
-		return fflat;
+	
+	public int getFlat() {
+		return flat;
 	}
 
-	public void setFflat(int fflat) {
-		this.fflat = fflat;
+	public void setFlat(int flat) {
+		this.flat = flat;
 	}
 
 	public String getId() {
